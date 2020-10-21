@@ -7,8 +7,12 @@ app = Flask(__name__)
 def index():
 	return render_template("index.html")
 
-@app.route('/admin_login')
+@app.route('/admin_login', methods=["GET", "POST"])
 def admin_login():
 	return render_template('admin_login.html')
+
+@app.route('/user_login', methods=["GET", "POST"])
+def user_login():
+	return render_template('user_login.html')
 
 app.run(debug=True, port=5000)
