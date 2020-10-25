@@ -1,8 +1,8 @@
 var errorArea = document.getElementById('formValidator');
 
 document.getElementById("repeat_password").addEventListener("keyup", checkPassword);
-document.getElementById("enter_2_wheeler").addEventListener("click", wheeler2);
-document.getElementById("enter_4_wheeler").addEventListener("click", wheeler4);
+document.getElementById("price_2").addEventListener("keyup", wheeler2);
+document.getElementById("price_4").addEventListener("keyup", wheeler4);
 
 function checkPassword() {
     var repeat_password = document.getElementById("repeat_password").value;
@@ -24,10 +24,10 @@ function wheeler2() {
     for(var i=0;i<price2_slots;i++) {
         price2_form += `<div class="row">
                             <div class="col s4">
-                                Enter time: <input id="form_2_1_`+(i+1)+`" type="number" placeholder="Enter time in hrs"></input>
+                                Enter time: <input name="form_2_1_`+(i+1)+`" type="number" placeholder="Enter time in hrs"></input>
                             </div>
                             <div class="col s4">
-                                Enter price: <input id="form_2_2_`+(i+1)+`" type="number" placeholder="Enter cost in Rs."></input>
+                                Enter price: <input name="form_2_2_`+(i+1)+`" type="number" placeholder="Enter cost in Rs."></input>
                             </div>
                         </div>`;
     }
@@ -41,10 +41,10 @@ function wheeler4() {
     for(var i=0;i<price4_slots;i++) {
         price4_form += `<div class="row">
                             <div class="col s4">
-                                Enter time: <input id="form_4_1_`+(i+1)+`" type="number" placeholder="Enter time in hrs"></input>
+                                Enter time: <input name="form_4_1_`+(i+1)+`" type="number" placeholder="Enter time in hrs"></input>
                             </div>
                             <div class="col s4">
-                                Enter price: <input id="form_4_2_`+(i+1)+`" type="number" placeholder="Enter cost in Rs."></input>
+                                Enter price: <input name="form_4_2_`+(i+1)+`" type="number" placeholder="Enter cost in Rs."></input>
                             </div>
                         </div>`;
     }
