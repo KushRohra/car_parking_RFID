@@ -26,7 +26,7 @@ def admin_register():
 		discount = request.form.get('discount')
 		if special_customer == '0' :
     			discount = 0 
-		print(shop_email, shop_name, password, repeat_password, wheeler_2, wheeler_4, price_2, price_4, special_customer, discount, type(special_customer))
+		print(shop_email, shop_name, password, repeat_password, wheeler_2, wheeler_4, price_2, price_4, special_customer, discount)
 	return render_template('./admin/admin_register.html')
 
 @app.route('/user_login', methods=["GET", "POST"])

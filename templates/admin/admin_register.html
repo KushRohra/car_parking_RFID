@@ -4,13 +4,17 @@
 	<title>Admin Register Page</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<style type="text/css">	
+		#formValidator {
+			font-size: 1.2rem;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
 		<h2 class="display-2">Fill in the following Details</h2>
+		<p>(All of the details are required)</p>
 		<br>
-		<form method="POST" class="col s12">
+		<form method="POST" class="col s12" id="register_form">
 			<div class="row">
 				<div class="col s6">
 					Shop Email: <input type="email" name="shop_email" id="shop_email" placeholder="Enter you Shop Email" required>
@@ -26,7 +30,12 @@
 					Password: <input type="password" name="password" id="password" placeholder="Enter the Password you want to keep" required>
 				</div>
 				<div class="col s6">
-					Rapeat Password: <input type="password" name="repeat_password" id="repeat_password" placeholder="Re-Type your password" required>
+					Rapeat Password: <input type="password" name="repeat_password" id="repeat_password" placeholder="Re-Type your password" onkeyup="checkPassword()" required>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s6">
+					<span id="formValidator"></span>
 				</div>
 			</div>
 			<div class="row">
@@ -77,5 +86,7 @@
 			</div>
 		</form>
 	</div>
+
+	<script type=text/javascript src="{{url_for('static', filename='js/admin/admin_register.js') }}"></script>
 </body>
 </html>
