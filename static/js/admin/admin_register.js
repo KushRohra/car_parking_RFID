@@ -20,21 +20,33 @@ function checkPassword() {
 function wheeler2() { 
     document.getElementById("form_2").innerHTML = ``;
     var price2_slots = document.getElementById("price_2").value;
-    var price2_form = `<form class="col s12">`;
+    var price2_form = ``;
     for(var i=0;i<price2_slots;i++) {
-        price2_form += `Enter: <input id="form2_`+(i+1)+`" type="text"></input>`;
+        price2_form += `<div class="row">
+                            <div class="col s4">
+                                Enter time: <input id="form_2_1_`+(i+1)+`" type="number" placeholder="Enter time in hrs"></input>
+                            </div>
+                            <div class="col s4">
+                                Enter price: <input id="form_2_2_`+(i+1)+`" type="number" placeholder="Enter cost in Rs."></input>
+                            </div>
+                        </div>`;
     }
     document.getElementById("form_2").innerHTML = price2_form;
-    price2_form = `</form>`;
 }
 
 function wheeler4() { 
     document.getElementById("form_4").innerHTML = ``;
     var price4_slots = document.getElementById("price_4").value;
-    var price4_form = `<form class="s12">`;
+    var price4_form = ``;
     for(var i=0;i<price4_slots;i++) {
-        price4_form += `Enter: <input id="form4_`+(i+1)+`" type="text"></input>`;
+        price4_form += `<div class="row">
+                            <div class="col s4">
+                                Enter time: <input id="form_4_1_`+(i+1)+`" type="number" placeholder="Enter time in hrs"></input>
+                            </div>
+                            <div class="col s4">
+                                Enter price: <input id="form_4_2_`+(i+1)+`" type="number" placeholder="Enter cost in Rs."></input>
+                            </div>
+                        </div>`;
     }
     document.getElementById("form_4").innerHTML = price4_form;
-    price4_form = `</form>`;
 }
