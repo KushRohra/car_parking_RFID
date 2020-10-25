@@ -14,7 +14,7 @@
 		<h2 class="display-2">Fill in the following Details</h2>
 		<p>(All of the details are required)</p>
 		<br>
-		<form method="POST" class="col s12" id="register_form">
+		<form method="POST" class="col s12">
 			<div class="row">
 				<div class="col s6">
 					Shop Email: <input type="email" name="shop_email" id="shop_email" placeholder="Enter you Shop Email" required>
@@ -30,7 +30,7 @@
 					Password: <input type="password" name="password" id="password" placeholder="Enter the Password you want to keep" required>
 				</div>
 				<div class="col s6">
-					Rapeat Password: <input type="password" name="repeat_password" id="repeat_password" placeholder="Re-Type your password" onkeyup="checkPassword()" required>
+					Rapeat Password: <input type="password" name="repeat_password" id="repeat_password" placeholder="Re-Type your password" required>
 				</div>
 			</div>
 			<div class="row">
@@ -48,6 +48,9 @@
 					2 Wheeler Pricing Components: <input type="number" name="price_2" id="price_2" placeholder="Enter the no of 2 Wheeler Pricing Components" required>
 				</div>
 			</div>
+			<a id="enter_2_wheeler" class="btn">Confirm 2 wheeler Pricing Components and enter the price</a>
+			<br>
+			<div id="form_2" class="row"></div>
 			<br>
 			<div class="row">
 				<div class="col s6">
@@ -59,6 +62,10 @@
 					4 Wheeler Pricing Components: <input type="number" name="price_4" id="price_4" placeholder="Enter the no of 4 Wheeler Pricing Components" required>
 				</div>
 			</div>
+			<a id="enter_4_wheeler" class="btn">Confirm 4 wheeler Pricing Components and enter the price</a>
+			<br>
+			<div id="form_4" class="row"></div>
+			<br>
 			<div class="row">
 				<div class="col s8">
 					<p>Do you have special (daily) customers for which you want to allocate parking from the end</p>
