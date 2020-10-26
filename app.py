@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, g, redirect, url_for
 import mysql.connector
+from bubbleSort import *
 
 mydb = mysql.connector.connect(
 		host="localhost", 
@@ -19,12 +20,6 @@ def index():
 def admin_login():
 	return render_template('./admin/admin_login.html')
 
-def bubbleSort(arr):
-	n = len(arr)
-	for i in range(n-1):
-		for j in range(0,n-i-1):
-			if arr[j][0] > arr[j+1][0]:
-				arr[j], arr[j+1] = arr[j+1], arr[j]
 
 @app.route('/admin_register', methods=["GET", "POST"])
 def admin_register():
@@ -57,11 +52,11 @@ def admin_register():
 		args = (shop_name, shop_email, password, wheeler_2, wheeler_4, price_2, price_4, special_customer, discount, )
 		mycursor.execute(query, args)
 		mydb.commit()
-		mycursor.execute("SELECT shop_id FROM admintable WHERE shop_id=(SELECT MAX(shop_id) FROM admintable)");
+		mycursor.execute("SELECT shop_id FROM admintable WHERE shop_id=(SELECT MAX(shop_id) FROM admintable)")
 		temp_id = mycursor.fetchone()
 		id = temp_id[0]
 		
-		tableName = str(id)+"_"+shop_name+"_parking2";
+		tableName = str(id)+"_"+shop_name+"_parking2"
 		create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, lot_no INT(11), parked INT(11))"
 		mycursor.execute(create_table)
 		for i in range(wheeler_2):
@@ -70,7 +65,7 @@ def admin_register():
 			mycursor.execute(query, args)
 			mydb.commit()
 
-		tableName = str(id)+"_"+shop_name+"_parking4";
+		tableName = str(id)+"_"+shop_name+"_parking4"
 		create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, lot_no INT(11), parked INT(11))"
 		mycursor.execute(create_table)
 		for i in range(wheeler_4):
@@ -79,11 +74,11 @@ def admin_register():
 			mycursor.execute(query, args)
 			mydb.commit()
 		
-		tableName = str(id)+"_"+shop_name+"_special";
+		tableName = str(id)+"_"+shop_name+"_special"
 		create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, rfid INT(11))"
 		mycursor.execute(create_table)
 
-		tableName = str(id)+"_"+shop_name+"_pricing";
+		tableName = str(id)+"_"+shop_name+"_pricing"
 		create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, hrs INT(11), cost INT(11), flag INT(11))"
 		mycursor.execute(create_table)
 		for i in range(len(price_2_list)):
