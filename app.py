@@ -122,9 +122,14 @@ def admin_register():
 
         session['admin_id'] = id
 
-        return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('admin_showId'))
     return render_template('./admin/admin_register.html')
 
+@app.route('/admin_showId', methods=['POST', 'GET'])
+def admin_showId():
+    if request.method == 'POST':
+        return redirect(url_for('admin_dashboard'))
+    return render_template('./admin/admin_showId.html', id=session['admin_id'])
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
