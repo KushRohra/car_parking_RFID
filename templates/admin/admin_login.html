@@ -10,15 +10,22 @@
 </head>
 <body>
 	<div class="container">
+		<h1 class="display-1">Enter the following details</h1>
+		<p>(If the dashboard does not open after submit button is clicked, it means some entry was wrong)</p>
 		<form method="POST" class="col s12">
 			<div class="row">
-				<div class="input-field col s12">
-					Shop ID: <input type="text" id="shop_id" placeholder="Enter your Shop ID" class="validate">
+				<div class="input-field col s9">
+					Shop ID: <input type="number" name="shop_id" placeholder="Enter your Shop ID" class="validate" min="0">
 				</div>
 			</div>
 			<div class="row">
-				<div class="input-field col s12">
-					Password: <input type="password" id="shop_password" placeholder="Enter your Shop password" class="validate">
+				<div class="input-field col s9">
+					Shop Email: <input type="text" name="shop_email" placeholder="Enter your Shop Email" class="validate">
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col s9">
+					Password: <input type="password" name="shop_password" placeholder="Enter your Shop password" class="validate">
 				</div>
 			</div>
 			<button class="btn waves-effect waves-light" type="submit" name="action">Submit
