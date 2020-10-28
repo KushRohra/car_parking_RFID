@@ -142,5 +142,9 @@ def admin_dashboard():
 def user_login():
     return render_template('./user/user_login.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('admin_login'))
 
 app.run(debug=True, port=5000)
