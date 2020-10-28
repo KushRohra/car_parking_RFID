@@ -142,6 +142,12 @@ def admin_dashboard():
     return render_template('./admin/admin_dashboard.html')
 
 
+# Special Customers Routes
+@app.route('/specialCustomers/addSpecialCustomers', methods=["POST", "GET"])
+def addSpecialCustomers():
+    return render_template("./specialCustomers/addSpecialCustomers.html")
+
+
 # Parking Routes
 @app.route('/parking/parkingStatus')
 def parkingStatus():
