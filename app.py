@@ -26,11 +26,13 @@ def before_request():
                 g.admin = x
 
 
+# Index Route
 @app.route('/')
 def index():
     return render_template("index.html")
 
 
+# Admin Routes
 @app.route('/admin_login', methods=["GET", "POST"])
 def admin_login():
     if request.method == 'POST':
@@ -140,11 +142,31 @@ def admin_dashboard():
     return render_template('./admin/admin_dashboard.html')
 
 
-@app.route('/user_login', methods=["GET", "POST"])
-def user_login():
-    return render_template('./user/user_login.html')
+# Parking Routes
+@app.route('/parking/parkingStatus')
+def parkingStatus():
+    # 2 wheeler parking details
+    tableName = str(session['admin_id']) + "__parking2"
+    query = "SELECT * FROM " + tableName
+    mycursor.execute(query)
+    allSpaces2 = len(mycursor.fetchall())
+    query += " WHERE parked=0"
+    mycursor.execute(query)
+    freeSpaces2 = len(mycursor.fetchall())
+
+    # 4 wheeler parking details
+    tableName = str(session['admin_id']) + "__parking4"
+    query = "SELECT * FROM " + tableName
+    mycursor.execute(query)
+    allSpaces4 = len(mycursor.fetchall())
+    query += " WHERE parked=0"
+    mycursor.execute(query)
+    freeSpaces4 = len(mycursor.fetchall())
+
+    return render_template("./parking/parkingStatus.html", free2=freeSpaces2, all2=allSpaces2, free4=freeSpaces4, all4=allSpaces4)
 
 
+# Pricing Routes
 @app.route('/pricing/viewPricing', methods=["GET", "POST"])
 def viewPricing():
     pricingDetails = []
@@ -163,6 +185,13 @@ def viewPricing():
     return render_template("./pricing/viewPricing.html", data=pricingDetails, type=value, len=len(pricingDetails))
 
 
+# User Routes
+@app.route('/user_login', methods=["GET", "POST"])
+def user_login():
+    return render_template('./user/user_login.html')
+
+
+# Logout Routes
 @app.route('/logout')
 def logout():
     session.clear()
