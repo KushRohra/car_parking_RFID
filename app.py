@@ -203,7 +203,6 @@ def parkingStatus2():
     tableName = str(session['admin_id']) + "__parking2"
     mycursor.execute("SELECT * FROM " + tableName)
     parking2 = mycursor.fetchall()
-    print(len(parking2))
     return render_template('./parking/parkingStatus2.html', data=parking2, len=len(parking2))
 
 
@@ -212,7 +211,6 @@ def parkingStatus4():
     tableName = str(session['admin_id']) + "__parking4"
     mycursor.execute("SELECT * FROM " + tableName)
     parking4 = mycursor.fetchall()
-    print(len(parking4))
     return render_template('./parking/parkingStatus4.html', data=parking4, len=len(parking4))
 
 

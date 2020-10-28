@@ -10,8 +10,37 @@
 		<a href="../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
 		<h4>View Parking Status of 4 Wheeler Slots</h4>
 		<table class="highlight centered responsive-table">
-			
+			<thead>
+				<tr>
+					<th>Lot No.</th>
+					<th>Occupied or Not</th>
+					<th>RFID of Vehicle Parked</th>
+				</tr>
+			</thead>
+			{% for i in range(len) %}
+			<tbody>
+				<tr>
+					<td>{{data[i][1]}}</td>
+					<td>
+						{% if data[i][2] == 0 %}
+							Not Occupied
+						{% else %}
+							Occupied
+						{% endif %}
+					</td>
+					<td>
+						{% if data[i][3] != 0 %}
+							{{data[i][3]}}
+						{% else %}
+							No vehicle Parked
+						{% endif %}
+					</td>
+				</tr>
+			</tbody>
+			{% endfor %}
 		</table>
+		<br>
+		<a href="../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
 	</div>
 </body>
 </html>
