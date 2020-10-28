@@ -85,20 +85,20 @@ def admin_register():
         id = temp_id[0]
 
         tableName = str(id) + "_" + shop_name + "_parking2"
-        create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, lot_no INT(11), parked INT(11))"
+        create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, lot_no INT(11), parked INT(11), rfid INT(11))"
         mycursor.execute(create_table)
         for i in range(wheeler_2):
-            query = "INSERT INTO " + tableName + "(lot_no, parked) VALUES(%s,%s)"
-            args = ((i + 1), 0,)
+            query = "INSERT INTO " + tableName + "(lot_no, parked, rfid) VALUES(%s,%s,%s)"
+            args = ((i + 1), 0, 0,)
             mycursor.execute(query, args)
             mydb.commit()
 
         tableName = str(id) + "_" + shop_name + "_parking4"
-        create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, lot_no INT(11), parked INT(11))"
+        create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, lot_no INT(11), parked INT(11), rfid INT(11))"
         mycursor.execute(create_table)
         for i in range(wheeler_4):
-            query = "INSERT INTO " + tableName + "(lot_no, parked) VALUES(%s,%s)"
-            args = ((i + 1), 0,)
+            query = "INSERT INTO " + tableName + "(lot_no, parked, rfid) VALUES(%s,%s,%s)"
+            args = ((i + 1), 0, 0,)
             mycursor.execute(query, args)
             mydb.commit()
 
@@ -125,11 +125,13 @@ def admin_register():
         return redirect(url_for('admin_showId'))
     return render_template('./admin/admin_register.html')
 
+
 @app.route('/admin_showId', methods=['POST', 'GET'])
 def admin_showId():
     if request.method == 'POST':
         return redirect(url_for('admin_dashboard'))
     return render_template('./admin/admin_showId.html', id=session['admin_id'])
+
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
@@ -142,9 +144,16 @@ def admin_dashboard():
 def user_login():
     return render_template('./user/user_login.html')
 
+
+@app.route('/pricing/viewPricing')
+def viewPricing():
+    return render_template("./pricing/viewPricing.html")
+
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('admin_login'))
+
 
 app.run(debug=True, port=5000)
