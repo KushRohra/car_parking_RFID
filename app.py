@@ -137,7 +137,7 @@ def admin_showId():
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
-    if session['admin_id'] == None:
+    if session['admin_id'] is None:
         return redirect(url_for('admin_login'))
     return render_template('./admin/admin_dashboard.html')
 
@@ -145,6 +145,21 @@ def admin_dashboard():
 # Special Customers Routes
 @app.route('/specialCustomers/addSpecialCustomers', methods=["POST", "GET"])
 def addSpecialCustomers():
+    if request.method == "POST":
+        tableName = str(session['admin_id']) + "__special"
+        existingCustomers = []
+        mycursor.execute("SELECT rfid FROM " + tableName)
+        result = mycursor.fetchall()
+        for x in result:
+            existingCustomers.append(x[0])
+        rfid = int(request.form.get('rfid'))
+        # To avoid adding the same entry more than one time
+        if rfid not in existingCustomers:
+            query = "INSERT INTO " + tableName + "(rfid) VALUES(%s)"
+            args = (rfid, )
+            mycursor.execute(query, args)
+            mydb.commit()
+        return redirect(url_for("admin_dashboard"))
     return render_template("./specialCustomers/addSpecialCustomers.html")
 
 
@@ -201,7 +216,7 @@ def user_login():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('admin_login'))
+    return redirect(url_for('index'))
 
 
 app.run(debug=True, port=5000)

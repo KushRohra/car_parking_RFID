@@ -1,1 +1,30 @@
-Add Special Customers
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add Special Customers</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+	<div class="container">
+		<br>
+		<a href="../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<h4>Add Special Customers</h4>
+		<p>(Do not worry if you mistakenly add one user more than 1 time)</p>
+		<div class="row">
+			<form method="POST" class="col s12">
+				<div class="row">
+					<div class="input-field col s6">
+						RFID of Customer: <input name="rfid" type="number" class="validate" required>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s2"></div>
+					<div class="col s5">
+						<button type="submit" class="btn">Add Customer</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
