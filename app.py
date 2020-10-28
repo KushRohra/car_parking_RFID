@@ -171,7 +171,6 @@ def viewSpecialCustomers():
     specialCustomers = []
     for x in temp_data:
         specialCustomers.append(x[0])
-    print(specialCustomers)
     return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers, len=len(specialCustomers))
 
 
@@ -197,6 +196,24 @@ def parkingStatus():
     freeSpaces4 = len(mycursor.fetchall())
 
     return render_template("./parking/parkingStatus.html", free2=freeSpaces2, all2=allSpaces2, free4=freeSpaces4, all4=allSpaces4)
+
+
+@app.route('/parking/parkingStatus2')
+def parkingStatus2():
+    tableName = str(session['admin_id']) + "__parking2"
+    mycursor.execute("SELECT * FROM " + tableName)
+    parking2 = mycursor.fetchall()
+    print(len(parking2))
+    return render_template('./parking/parkingStatus2.html', data=parking2, len=len(parking2))
+
+
+@app.route('/parking/parkingStatus4')
+def parkingStatus4():
+    tableName = str(session['admin_id']) + "__parking4"
+    mycursor.execute("SELECT * FROM " + tableName)
+    parking4 = mycursor.fetchall()
+    print(len(parking4))
+    return render_template('./parking/parkingStatus4.html', data=parking4, len=len(parking4))
 
 
 # Pricing Routes
