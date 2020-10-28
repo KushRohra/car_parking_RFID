@@ -1,36 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Parking Details</title>
+	<title>Add Special Customers</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
 	<div class="container">
 		<br>
 		<a href="../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
-		<h4>Parking Status</h4>
+		<h4>View All Special Customers</h4>
 		<table class="highlight centered responsive-table">
 			<thead>
 				<tr>
-					<th>Type of Vehicle</th>
-					<th>Total Spaces</th>
-					<th>Free Spaces</th>
+					<th>Serial No.</th>
+					<th>RFID of User</th>
 				</tr>
 			</thead>
+			{% for i in range(len) %}
 			<tbody>
 				<tr>
-					<td>2 Wheeler</td>
-					<td>{{all2}}</td>
-					<td>{{free2}}</td>
+					<td>{{i+1}}</td>
+					<td>{{data[i]}}</td>
 				</tr>
 			</tbody>
-			<tbody>
-				<tr>
-					<td>4 Wheeler</td>
-					<td>{{all4}}</td>
-					<td>{{free4}}</td>
-				</tr>
-			</tbody>
+			{% endfor %}
 		</table>
 	</div>
 </body>

@@ -163,6 +163,18 @@ def addSpecialCustomers():
     return render_template("./specialCustomers/addSpecialCustomers.html")
 
 
+@app.route('/specialCustomers/viewSpecialCustomers')
+def viewSpecialCustomers():
+    tableName = str(session['admin_id']) + "__special"
+    mycursor.execute("SELECT rfid FROM " + tableName)
+    temp_data = mycursor.fetchall()
+    specialCustomers = []
+    for x in temp_data:
+        specialCustomers.append(x[0])
+    print(specialCustomers)
+    return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers, len=len(specialCustomers))
+
+
 # Parking Routes
 @app.route('/parking/parkingStatus')
 def parkingStatus():
