@@ -1,11 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Login Page</title>
+	<title>Pricing Details</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
 </head>
 <body>
-		
+	<div class="container">
+		<br>
+		<a href="../../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<h4>Choose the type of vehicle whose Pricing details you want to see:</h4>
+		<form method="POST">
+			<p>
+				<label>
+					<input name="type" type="radio" value="2">
+					<span>2 Wheeler Pricing Details</span>
+				</label>
+			</p>
+			<p>
+				<label>
+					<input name="type" type="radio" value="4">
+					<span>4 Wheeler Pricing Details</span>
+				</label>
+			</p>
+			<p>
+				<button class="btn" type="submit">Go...</button>
+			</p>
+		</form>
+		<br>
+		{%if len > 0 %}
+			<h4>{{type}} Wheeler Pricing</h4>
+			<table class="highlight striped centered responsive-table">
+				<thead>
+					<tr>
+						<th>Serial No.</th>
+						<th>Time(in hrs)</th>
+						<th>Price(in Rs)</th>
+					</tr>
+				</thead>
+				{%for i in range(0,len)%}
+					<tbody>
+						<tr>
+							<td>{{i+1}}</td>
+							<td>{{data[i][1]}}</td>
+							<td>{{data[i][2]}}</td>
+						</tr>
+						</tbody>
+				{%endfor%}
+			</table>
+		{%endif%}
+	</div>
 </body>
 </html>

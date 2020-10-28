@@ -84,7 +84,7 @@ def admin_register():
         temp_id = mycursor.fetchone()
         id = temp_id[0]
 
-        tableName = str(id) + "_" + shop_name + "_parking2"
+        tableName = str(id) + "_" + "_parking2"
         create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, lot_no INT(11), parked INT(11), rfid INT(11))"
         mycursor.execute(create_table)
         for i in range(wheeler_2):
@@ -93,7 +93,7 @@ def admin_register():
             mycursor.execute(query, args)
             mydb.commit()
 
-        tableName = str(id) + "_" + shop_name + "_parking4"
+        tableName = str(id) + "_" + "_parking4"
         create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, lot_no INT(11), parked INT(11), rfid INT(11))"
         mycursor.execute(create_table)
         for i in range(wheeler_4):
@@ -102,11 +102,11 @@ def admin_register():
             mycursor.execute(query, args)
             mydb.commit()
 
-        tableName = str(id) + "_" + shop_name + "_special"
+        tableName = str(id) + "_" + "_special"
         create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, rfid INT(11))"
         mycursor.execute(create_table)
 
-        tableName = str(id) + "_" + shop_name + "_pricing"
+        tableName = str(id) + "_" + "_pricing"
         create_table = "CREATE TABLE " + tableName + "(id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, hrs INT(11), cost INT(11), flag INT(11))"
         mycursor.execute(create_table)
         for i in range(len(price_2_list)):
@@ -145,9 +145,22 @@ def user_login():
     return render_template('./user/user_login.html')
 
 
-@app.route('/pricing/viewPricing')
+@app.route('/pricing/viewPricing', methods=["GET", "POST"])
 def viewPricing():
-    return render_template("./pricing/viewPricing.html")
+    pricingDetails = []
+    value = " "
+    if request.method == 'POST':
+        value = request.form.get('type')
+        tableName = str(session['admin_id']) + "_" + "_pricing"
+        query = " "
+        if value == "2":
+            query = "SELECT * FROM " + tableName + " WHERE flag=0"
+        elif value == "4":
+            query = "SELECT * FROM " + tableName + " WHERE flag=1"
+        if query != " ":
+            mycursor.execute(query)
+            pricingDetails = mycursor.fetchall()
+    return render_template("./pricing/viewPricing.html", data=pricingDetails, type=value, len=len(pricingDetails))
 
 
 @app.route('/logout')
