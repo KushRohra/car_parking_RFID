@@ -233,6 +233,16 @@ def viewPricing():
     return render_template("./pricing/viewPricing.html", data=pricingDetails, type=value, len=len(pricingDetails))
 
 
+@app.route('/pricing/changePricing2')
+def changePricing2():
+    return render_template('./pricing/changePricing2.html')
+
+
+@app.route('/pricing/changePricing4')
+def changePricing4():
+    return render_template('./pricing/changePricing4.html')
+
+
 # User Routes
 @app.route('/user_login', methods=["GET", "POST"])
 def user_login():
