@@ -233,13 +233,47 @@ def viewPricing():
     return render_template("./pricing/viewPricing.html", data=pricingDetails, type=value, len=len(pricingDetails))
 
 
-@app.route('/pricing/changePricing2')
+@app.route('/pricing/changePricing2', methods=["POST", "GET"])
 def changePricing2():
+    if request.method == "POST":
+        noOf2Slots = int(request.form.get("price_2"))
+        price2_list = []
+        for i in range(noOf2Slots):
+            hrs = request.form.get('form_2_1_' + str(i + 1))
+            price = request.form.get('form_2_2_' + str(i + 1))
+            price2_list.append([hrs, price])
+        bubbleSort(price2_list)
+        tableName = str(session['admin_id']) + "__pricing"
+        mycursor.execute("DELETE FROM " + tableName + " WHERE flag=0")
+        mydb.commit()
+        query = "INSERT INTO " + tableName + "(hrs,cost,flag) VALUES(%s,%s,%s)"
+        for i in range(len(price2_list)):
+            args = (price2_list[i][0], price2_list[i][1], 0,)
+            mycursor.execute(query, args)
+            mydb.commit()
+        return redirect(url_for('admin_dashboard'))
     return render_template('./pricing/changePricing2.html')
 
 
-@app.route('/pricing/changePricing4')
+@app.route('/pricing/changePricing4', methods=["POST", "GET"])
 def changePricing4():
+    if request.method == "POST":
+        noOf4Slots = int(request.form.get("price_4"))
+        price4_list = []
+        for i in range(noOf4Slots):
+            hrs = request.form.get('form_4_1_' + str(i + 1))
+            price = request.form.get('form_4_2_' + str(i + 1))
+            price4_list.append([hrs, price])
+        bubbleSort(price4_list)
+        tableName = str(session['admin_id']) + "__pricing"
+        mycursor.execute("DELETE FROM " + tableName + " WHERE flag=1")
+        mydb.commit()
+        query = "INSERT INTO " + tableName + "(hrs,cost,flag) VALUES(%s,%s,%s)"
+        for i in range(len(price4_list)):
+            args = (price4_list[i][0], price4_list[i][1], 1,)
+            mycursor.execute(query, args)
+            mydb.commit()
+        return redirect(url_for('admin_dashboard'))
     return render_template('./pricing/changePricing4.html')
 
 
