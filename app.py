@@ -222,25 +222,22 @@ def addParking():
         type = request.form.get("parkingType")
         newSlots = int(request.form.get("parkingSlots"))
         if type == "2":
-            totalSlots2 = newSlots + current2
-            mycursor.execute("UPDATE admintable SET parking_2=" + str(totalSlots2) + " WHERE shop_id=" + str(session['admin_id']))
-            mydb.commit()
+            totalSlots = newSlots + current2
+            parkingTableName = "parking_2"
             tableName = str(session['admin_id']) + "__parking2"
-            query = "INSERT INTO " + tableName + "(lot_no, parked, rfid) VALUES(%s,%s,%s)"
-            for i in range(newSlots):
-                args = ((i + 1 + current2), 0, 0,)
-                mycursor.execute(query, args)
-                mydb.commit()
+            lastSlot = current2
         elif type == "4":
-            totalSlots4 = newSlots + current4
-            mycursor.execute("UPDATE admintable SET parking_4=" + str(totalSlots4) + " WHERE shop_id=" + str(session['admin_id']))
-            mydb.commit()
+            totalSlots = newSlots + current4
+            parkingTableName = "parking_4"
             tableName = str(session['admin_id']) + "__parking4"
-            query = "INSERT INTO " + tableName + "(lot_no, parked, rfid) VALUES(%s,%s,%s)"
-            for i in range(newSlots):
-                args = ((i + 1 + current4), 0, 0,)
-                mycursor.execute(query, args)
-                mydb.commit()
+            lastSlot = current4
+        mycursor.execute("UPDATE admintable SET " + parkingTableName + "=" + str(totalSlots) + " WHERE shop_id=" + str(session['admin_id']))
+        mydb.commit()
+        query = "INSERT INTO " + tableName + "(lot_no, parked, rfid) VALUES(%s,%s,%s)"
+        for i in range(newSlots):
+            args = ((i + 1 + lastSlot), 0, 0,)
+            mycursor.execute(query, args)
+            mydb.commit()
         return redirect(url_for('admin_dashboard'))
     return render_template('./parking/addParking.html', current2=current2, current4=current4)
 
