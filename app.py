@@ -214,6 +214,37 @@ def parkingStatus4():
     return render_template('./parking/parkingStatus4.html', data=parking4, len=len(parking4))
 
 
+@app.route('/parking/addParking', methods=["POST","GET"])
+def addParking():
+    mycursor.execute("SELECT parking_2, parking_4 FROM admintable WHERE shop_id=" + str(session['admin_id']))
+    current2, current4 = mycursor.fetchone()
+    if request.method == "POST":
+        type = request.form.get("parkingType")
+        newSlots = int(request.form.get("parkingSlots"))
+        if type == "2":
+            totalSlots2 = newSlots + current2
+            mycursor.execute("UPDATE admintable SET parking_2=" + str(totalSlots2) + " WHERE shop_id=" + str(session['admin_id']))
+            mydb.commit()
+            tableName = str(session['admin_id']) + "__parking2"
+            query = "INSERT INTO " + tableName + "(lot_no, parked, rfid) VALUES(%s,%s,%s)"
+            for i in range(newSlots):
+                args = ((i + 1 + current2), 0, 0,)
+                mycursor.execute(query, args)
+                mydb.commit()
+        elif type == "4":
+            totalSlots4 = newSlots + current4
+            mycursor.execute("UPDATE admintable SET parking_4=" + str(totalSlots4) + " WHERE shop_id=" + str(session['admin_id']))
+            mydb.commit()
+            tableName = str(session['admin_id']) + "__parking4"
+            query = "INSERT INTO " + tableName + "(lot_no, parked, rfid) VALUES(%s,%s,%s)"
+            for i in range(newSlots):
+                args = ((i + 1 + current4), 0, 0,)
+                mycursor.execute(query, args)
+                mydb.commit()
+        return redirect(url_for('admin_dashboard'))
+    return render_template('./parking/addParking.html', current2=current2, current4=current4)
+
+
 # Pricing Routes
 @app.route('/pricing/viewPricing', methods=["GET", "POST"])
 def viewPricing():

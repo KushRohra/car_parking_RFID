@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add Parking Slots</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+	<div class="container">
+		<br>
+		<a href="../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<h4>Add Parking Slots</h4>
+		<p>(Only Enter the No of new Slots being Added)</p>
+		<br>
+		<div class="row">
+			<div class="col"></div>
+			<div class="col s4">
+				<h6>Current 2 Wheeler Parking Spaces: {{current2}}</h6>
+				<h6>Current 4 Wheeler Parking Spaces: {{current4}}</h6>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<form method="POST" class="col s12">
+				<div class="row">
+					<div class="col 6">
+						<label>
+							<input name="parkingType" type="radio" value="2" required />
+							<span>2 Wheeler Parking</span>
+						</label>
+					</div>
+					<div class="col s6">
+						<label>
+							<input name="parkingType" type="radio" value="4" required />
+							<span>4 Wheeler Parking</span>
+						</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s6">
+						No of new Slots: <input name="parkingSlots" type="number"required />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s4">
+						<button type="submit" class="btn">Add New Slots</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
