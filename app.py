@@ -174,6 +174,11 @@ def viewSpecialCustomers():
     return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers, len=len(specialCustomers))
 
 
+@app.route('/changePassword')
+def changePassword():
+    return render_template('./admin/changePassword.html')
+
+
 # Parking Routes
 @app.route('/parking/parkingStatus')
 def parkingStatus():
