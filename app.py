@@ -277,6 +277,22 @@ def changePricing4():
     return render_template('./pricing/changePricing4.html')
 
 
+# Discount Routes
+@app.route('/discount/changeDiscount', methods=["POST", "GET"])
+def changeDiscount():
+    mycursor.execute("SELECT discount, special_customers FROM admintable WHERE shop_id=" + str(session['admin_id']))
+    currentDiscount, specialCustomers = mycursor.fetchone()
+    message = "If you don't have special customers there is no need to fill the form"
+    if request.method == "POST":
+        discountRate = request.form.get("discountRate")
+        if specialCustomers == 0:
+            discountRate = 0
+        mycursor.execute("UPDATE admintable SET discount="+discountRate+" WHERE shop_id="+str(session['admin_id']))
+        mydb.commit()
+        return redirect(url_for('admin_dashboard'))
+    return render_template('./discount/changeDiscount.html', message=message, discount=currentDiscount)
+
+
 # User Routes
 @app.route('/user_login', methods=["GET", "POST"])
 def user_login():

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Change Discount</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+	<div class="container">
+		<br>
+		<a href="../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<h4>Change Discount</h4>
+		<h6>Current Discount Rate: {{discount}}%</h6>
+		<p>({{message}})</p>
+		<br>
+		<div class="row">
+			<form class="col s12" method="POST">
+				<div class="row">
+					<div class="col s6">
+						Enter new Discount Rate(in percentage):
+						<input type="number" name="discountRate" placeholder="Enter the new discount rate" required>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s3">
+						<button class="btn" type="submit">Change Discount Rate..</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html
