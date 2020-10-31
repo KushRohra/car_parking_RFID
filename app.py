@@ -174,8 +174,19 @@ def viewSpecialCustomers():
     return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers, len=len(specialCustomers))
 
 
-@app.route('/changePassword')
+@app.route('/changePassword', methods=["POST", "GET"])
 def changePassword():
+    if request.method == "POST":
+        password = request.form.get("password")
+        repeatPassword = request.form.get("repeat_password")
+        if password != repeatPassword:
+            return render_template('./admin/changePassword.html')
+        else:
+            query = "UPDATE admintable SET shop_password=%s" + " WHERE shop_id=" + str(session['admin_id'])
+            args = (password,)
+            mycursor.execute(query, args)
+            mydb.commit()
+            return redirect(url_for('admin_dashboard'))
     return render_template('./admin/changePassword.html')
 
 
