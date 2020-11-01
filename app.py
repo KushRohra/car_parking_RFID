@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, session, g, redirect, url_for
 import mysql.connector
+from flask import Flask, render_template, request, session, g, redirect, url_for
+from pymongo import MongoClient
 from bubbleSort import *
 
 mydb = mysql.connector.connect(
@@ -9,6 +10,10 @@ mydb = mysql.connector.connect(
     database="carparking_rfid"
 )
 mycursor = mydb.cursor()
+
+cluster = MongoClient("mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority")
+db = cluster["car_parking_rfid"]
+users = db["users"]
 
 app = Flask(__name__)
 app.secret_key = '1234'
@@ -340,6 +345,14 @@ def changeDiscount():
 # User Routes
 @app.route('/user_register', methods=["GET", "POST"])
 def user_register():
+    if request.method == "POST":
+        user_email = request.form.get("user_email")
+        password = request.form.get("password")
+        customerType = request.form.get("customerType")
+        user_image = request.files.get("user_image", 'rb')
+        print(user_email, password, customerType)
+        print(user_image)
+        users.insert_one({"user_email": user_email, "password": password, "customerType": customerType})
     return render_template("./user/user_register.html")
 
 
