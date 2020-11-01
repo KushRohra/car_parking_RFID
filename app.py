@@ -367,14 +367,32 @@ def user_register():
         mycursor.execute(query, args)
         mydb.commit()
 
+        user_name = request.form.get("user_name")
         user_email = request.form.get("user_email")
         password = request.form.get("password")
         customerType = request.form.get("customerType")
         user_image = request.files.get("user_image", 'rb')
         mongo.save_file(user_image.filename, user_image)
         userImages = [user_image.filename]
-        users.insert_one({"_id": current_id, "user_email": user_email, "password": password, "customerType": customerType, "user_images": userImages})
+        parkingDetails = []
+        users.insert_one({"_id": current_id, "user_name": user_name, "user_email": user_email, "password": password, "customerType": customerType, "user_images": userImages, "parkingDetails": parkingDetails})
+
+        session['user_id'] = current_id
+        return redirect(url_for('user_showId'))
     return render_template("./user/user_register.html")
+
+
+
+@app.route("/user_showId", methods=["POST", "GET"])
+def user_showId():
+    if request.method == "POST":
+        return redirect(url_for('user_dashboard'))
+    return render_template('/user/user_showId.html', id=session['user_id'])
+
+
+@app.route('/user_dashboard')
+def user_dashboard():
+    return render_template('./user/user_dashboard.html')
 
 
 @app.route('/user_login', methods=["GET", "POST"])
