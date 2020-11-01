@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>See All User Images</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link href = "https://fonts.googleapis.com/icon?family=Material+Icons" rel = "stylesheet">
+	<style type="text/css"></style>
+</head>
+<body>
+	<div class="container">
+		<br>
+		<a class="btn" href="../user_dashboard"> Go to Dashboard</a>
+		<h3>Your Images</h3>
+		<table class="highlight centered">
+			<thead>
+				<tr>
+					<th>Serial No.</th>
+					<th>Name of the Image Stored</th>
+					<th>Image</th>
+					<th>Unauthorize this person from using your RFID Tag</th>
+				</tr>
+			</thead>
+			{% for i in range(len) %}
+			<tbody>
+				<tr>
+					<td>{{i+1}}</td>
+					<td>{{images[i]}}</td>
+					<td><img src={{url_for('file', filename=images[i])}} height="150" width="150"></td>
+					<td><a href=""><i class="material-icons">delete_forever</i></a></td>
+				</tr>
+			</tbody>
+			{% endfor %}
+		</table>
+	</div>
+</body>
+</html>

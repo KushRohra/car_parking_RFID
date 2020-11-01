@@ -15,13 +15,14 @@ mycursor = mydb.cursor()
 app = Flask(__name__)
 app.secret_key = '1234'
 
-cluster = MongoClient("mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority")
+cluster = MongoClient(
+    "mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority")
 db = cluster["car_parking_rfid"]
 users = db["users"]
 
-app.config["MONGO_URI"] = "mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority"
+app.config[
+    "MONGO_URI"] = "mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority"
 mongo = PyMongo(app)
-
 
 mycursor.execute("SELECT * FROM admintable")
 allAdmin = mycursor.fetchall()
@@ -165,7 +166,7 @@ def addSpecialCustomers():
         # To avoid adding the same entry more than one time
         if rfid not in existingCustomers:
             query = "INSERT INTO " + tableName + "(rfid) VALUES(%s)"
-            args = (rfid, )
+            args = (rfid,)
             mycursor.execute(query, args)
             mydb.commit()
         return redirect(url_for("admin_dashboard"))
@@ -180,7 +181,8 @@ def viewSpecialCustomers():
     specialCustomers = []
     for x in temp_data:
         specialCustomers.append(x[0])
-    return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers, len=len(specialCustomers))
+    return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers,
+                           len=len(specialCustomers))
 
 
 @app.route('/specialCustomers/deleteSpecialCustomers/<int:rfid>')
@@ -230,7 +232,8 @@ def parkingStatus():
     mycursor.execute(query)
     freeSpaces4 = len(mycursor.fetchall())
 
-    return render_template("./parking/parkingStatus.html", free2=freeSpaces2, all2=allSpaces2, free4=freeSpaces4, all4=allSpaces4)
+    return render_template("./parking/parkingStatus.html", free2=freeSpaces2, all2=allSpaces2, free4=freeSpaces4,
+                           all4=allSpaces4)
 
 
 @app.route('/parking/parkingStatus2')
@@ -249,7 +252,7 @@ def parkingStatus4():
     return render_template('./parking/parkingStatus4.html', data=parking4, len=len(parking4))
 
 
-@app.route('/parking/addParking', methods=["POST","GET"])
+@app.route('/parking/addParking', methods=["POST", "GET"])
 def addParking():
     mycursor.execute("SELECT parking_2, parking_4 FROM admintable WHERE shop_id=" + str(session['admin_id']))
     current2, current4 = mycursor.fetchone()
@@ -266,7 +269,8 @@ def addParking():
             parkingTableName = "parking_4"
             tableName = str(session['admin_id']) + "__parking4"
             lastSlot = current4
-        mycursor.execute("UPDATE admintable SET " + parkingTableName + "=" + str(totalSlots) + " WHERE shop_id=" + str(session['admin_id']))
+        mycursor.execute("UPDATE admintable SET " + parkingTableName + "=" + str(totalSlots) + " WHERE shop_id=" + str(
+            session['admin_id']))
         mydb.commit()
         query = "INSERT INTO " + tableName + "(lot_no, parked, rfid) VALUES(%s,%s,%s)"
         for i in range(newSlots):
@@ -350,7 +354,8 @@ def changeDiscount():
         discountRate = request.form.get("discountRate")
         if specialCustomers == 0:
             discountRate = 0
-        mycursor.execute("UPDATE admintable SET discount="+discountRate+" WHERE shop_id="+str(session['admin_id']))
+        mycursor.execute(
+            "UPDATE admintable SET discount=" + discountRate + " WHERE shop_id=" + str(session['admin_id']))
         mydb.commit()
         return redirect(url_for('admin_dashboard'))
     return render_template('./discount/changeDiscount.html', message=message, discount=currentDiscount)
@@ -363,7 +368,7 @@ def user_register():
         mycursor.execute("SELECT count FROM usercount WHERE id=1")
         current_id = mycursor.fetchone()[0]
         query = "UPDATE usercount SET count=%s WHERE id=%s"
-        args = (current_id + 1, 1, )
+        args = (current_id + 1, 1,)
         mycursor.execute(query, args)
         mydb.commit()
 
@@ -379,12 +384,13 @@ def user_register():
         mongo.save_file(user_image.filename, user_image)
         userImages = [user_image.filename]
         parkingDetails = []
-        users.insert_one({"_id": current_id, "user_name": user_name, "user_email": user_email, "password": password, "customerType": customerType, "balance": balance, "user_images": userImages, "parkingDetails": parkingDetails})
+        users.insert_one({"_id": current_id, "user_name": user_name, "user_email": user_email, "password": password,
+                          "customerType": customerType, "balance": balance, "user_images": userImages,
+                          "parkingDetails": parkingDetails})
 
         session['user_id'] = current_id
         return redirect(url_for('user_showId'))
     return render_template("./user/user_register.html")
-
 
 
 @app.route("/user_showId", methods=["POST", "GET"])
@@ -405,18 +411,31 @@ def user_login():
     if request.method == "POST":
         id = int(request.form.get("id"))
         password = request.form.get("password")
-        userDetails = users.find({"_id": id})[0]
-        if len(userDetails) == 0 or password != userDetails['password']:
-            if len(userDetails) == 0:
-                message = "Enter Correct ID Number"
-            elif password != userDetails['password']:
-                message = "Enter Correct Password"
-            return render_template('./user/user_login.html', message=message)
-        elif password == userDetails['password']:
-            session['user_id'] = id
-            return redirect(url_for('user_dashboard'))
-        print(userDetails)
+        userDetails = users.find({"_id": id})
+        copy = userDetails
+        if len(list(copy)) == 0:
+            message = "Enter Correct ID Number"
+        else:
+            userDetails = users.find({"_id": id})[0]
+            if password != userDetails['password']:
+                    message = "Enter Correct Password"
+            elif password == userDetails['password']:
+                session['user_id'] = id
+                return redirect(url_for('user_dashboard'))
     return render_template('./user/user_login.html', message=message)
+
+
+# User Image Releated Routes
+@app.route('/file/<filename>')
+def file(filename):
+    return mongo.send_file(filename)
+
+@app.route('/user/seeImages')
+def seeImages():
+    userDetails = users.find({"_id": session['user_id']})[0]
+    for x in userDetails['user_images']:
+        print(x)
+    return render_template('./user/userImages/seeImages.html', images=userDetails['user_images'], len=len(userDetails['user_images']))
 
 
 # Logout Routes
