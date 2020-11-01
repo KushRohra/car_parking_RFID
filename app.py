@@ -371,11 +371,15 @@ def user_register():
         user_email = request.form.get("user_email")
         password = request.form.get("password")
         customerType = request.form.get("customerType")
+        if customerType == "1":
+            balance = 500
+        else:
+            balance = 100
         user_image = request.files.get("user_image", 'rb')
         mongo.save_file(user_image.filename, user_image)
         userImages = [user_image.filename]
         parkingDetails = []
-        users.insert_one({"_id": current_id, "user_name": user_name, "user_email": user_email, "password": password, "customerType": customerType, "user_images": userImages, "parkingDetails": parkingDetails})
+        users.insert_one({"_id": current_id, "user_name": user_name, "user_email": user_email, "password": password, "customerType": customerType, "balance": balance, "user_images": userImages, "parkingDetails": parkingDetails})
 
         session['user_id'] = current_id
         return redirect(url_for('user_showId'))
@@ -397,7 +401,22 @@ def user_dashboard():
 
 @app.route('/user_login', methods=["GET", "POST"])
 def user_login():
-    return render_template('./user/user_login.html')
+    message = ""
+    if request.method == "POST":
+        id = int(request.form.get("id"))
+        password = request.form.get("password")
+        userDetails = users.find({"_id": id})[0]
+        if len(userDetails) == 0 or password != userDetails['password']:
+            if len(userDetails) == 0:
+                message = "Enter Correct ID Number"
+            elif password != userDetails['password']:
+                message = "Enter Correct Password"
+            return render_template('./user/user_login.html', message=message)
+        elif password == userDetails['password']:
+            session['user_id'] = id
+            return redirect(url_for('user_dashboard'))
+        print(userDetails)
+    return render_template('./user/user_login.html', message=message)
 
 
 # Logout Routes
