@@ -3,6 +3,7 @@
 <head>
 	<title>Add Special Customers</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 	<div class="container">
@@ -14,6 +15,7 @@
 				<tr>
 					<th>Serial No.</th>
 					<th>RFID of User</th>
+					<th>Remove Special Customer</th>
 				</tr>
 			</thead>
 			{% for i in range(len) %}
@@ -21,6 +23,7 @@
 				<tr>
 					<td>{{i+1}}</td>
 					<td>{{data[i]}}</td>
+					<td><a href="{{url_for('deleteSpecialCustomers', rfid=data[i])}}"><i class="material-icons">delete_forever</i></a></td>
 				</tr>
 			</tbody>
 			{% endfor %}

@@ -179,6 +179,16 @@ def viewSpecialCustomers():
     return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers, len=len(specialCustomers))
 
 
+@app.route('/specialCustomers/deleteSpecialCustomers/<int:rfid>')
+def deleteSpecialCustomers(rfid):
+    tableName = str(session['admin_id']) + "__special"
+    query = "DELETE FROM " + tableName + " WHERE rfid=%s"
+    args = (rfid,)
+    mycursor.execute(query, args)
+    mydb.commit()
+    return redirect(url_for("admin_dashboard"))
+
+
 @app.route('/changePassword', methods=["POST", "GET"])
 def changePassword():
     if request.method == "POST":
