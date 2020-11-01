@@ -338,6 +338,11 @@ def changeDiscount():
 
 
 # User Routes
+@app.route('/user_register', methods=["GET", "POST"])
+def user_register():
+    return render_template("./user/user_register.html")
+
+
 @app.route('/user_login', methods=["GET", "POST"])
 def user_login():
     return render_template('./user/user_login.html')

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>User Register Page</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<style type="text/css">
+		#formValidator {
+			font-size: 1.2rem;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h2 class="display-2">Fill in the following Details</h2>
+		<p>(All of the details are required)</p>
+		<br>
+		<div class="row">
+			<form method="POST" class="col s12">
+				<div class="row">
+					<div class="col s6">
+						Email: <input type="email" class="validate" name="user_email" placeholder="Enter your Email ID here" required />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s5">
+						Password: <input type="password" id="password" name="password" class="validator" placeholder="Enter your password" required>
+					</div>
+					<div class="col s5">
+						Repeat Password: <input type="password" id="repeat_password" class="validate" name="repeat_password" placeholder="Repeat Password" required>
+					</div>
+				</div>
+				<div class="row"><div class="col s6"><span id="formValidator"></span></div></div>
+				<div class="row"><div class="col s12"><h6>Select Type of Card You Want</h6></div></div>
+				<div class="row">
+					<div class="col s4">
+						<label>
+							<input name="customerType" type="radio" value="0" required />
+							<span>Normal Card</span>
+						</label>
+					</div>
+					<div class="col s4">
+						<label>
+							<input name="customerType" type="radio" value="1" required />
+							<span>Gold Card</span>
+						</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s5">
+						<button type="submit" class="btn" id="submitBtn">Submit Details</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script type=text/javascript src="{{url_for('static', filename='js/user/user_register.js') }}"></script>
+</body>
+</html>
