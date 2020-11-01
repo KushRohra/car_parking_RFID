@@ -2,6 +2,7 @@ import mysql.connector
 from flask import Flask, render_template, request, session, g, redirect, url_for
 from pymongo import MongoClient
 from bubbleSort import *
+from flask_pymongo import PyMongo
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -11,12 +12,16 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
+app = Flask(__name__)
+app.secret_key = '1234'
+
 cluster = MongoClient("mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority")
 db = cluster["car_parking_rfid"]
 users = db["users"]
 
-app = Flask(__name__)
-app.secret_key = '1234'
+app.config["MONGO_URI"] = "mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority"
+mongo = PyMongo(app)
+
 
 mycursor.execute("SELECT * FROM admintable")
 allAdmin = mycursor.fetchall()
@@ -62,7 +67,6 @@ def admin_register():
         shop_email = request.form.get('shop_email')
         shop_name = request.form.get('shop_name')
         password = request.form.get('password')
-        repeat_password = request.form.get('repeat_password')
         wheeler_2 = int(request.form.get('wheeler_2'))
         wheeler_4 = int(request.form.get('wheeler_4'))
         price_2 = int(request.form.get('price_2'))
@@ -356,13 +360,20 @@ def changeDiscount():
 @app.route('/user_register', methods=["GET", "POST"])
 def user_register():
     if request.method == "POST":
+        mycursor.execute("SELECT count FROM usercount WHERE id=1")
+        current_id = mycursor.fetchone()[0]
+        query = "UPDATE usercount SET count=%s WHERE id=%s"
+        args = (current_id + 1, 1, )
+        mycursor.execute(query, args)
+        mydb.commit()
+
         user_email = request.form.get("user_email")
         password = request.form.get("password")
         customerType = request.form.get("customerType")
         user_image = request.files.get("user_image", 'rb')
-        print(user_email, password, customerType)
-        print(user_image)
-        users.insert_one({"user_email": user_email, "password": password, "customerType": customerType})
+        mongo.save_file(user_image.filename, user_image)
+        userImages = [user_image.filename]
+        users.insert_one({"_id": current_id, "user_email": user_email, "password": password, "customerType": customerType, "user_images": userImages})
     return render_template("./user/user_register.html")
 
 
