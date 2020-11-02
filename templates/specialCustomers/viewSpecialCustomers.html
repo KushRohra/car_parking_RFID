@@ -15,6 +15,7 @@
 				<tr>
 					<th>Serial No.</th>
 					<th>RFID of User</th>
+					<th>UserName of Customer</th>
 					<th>Remove Special Customer</th>
 				</tr>
 			</thead>
@@ -23,6 +24,7 @@
 				<tr>
 					<td>{{i+1}}</td>
 					<td>{{data[i]}}</td>
+					<td>{{userNames[i]}}</td>
 					<td><a href="{{url_for('deleteSpecialCustomers', rfid=data[i])}}"><i class="material-icons">delete_forever</i></a></td>
 				</tr>
 			</tbody>

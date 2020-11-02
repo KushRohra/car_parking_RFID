@@ -179,13 +179,15 @@ def viewSpecialCustomers():
     mycursor.execute("SELECT rfid FROM " + tableName)
     temp_data = mycursor.fetchall()
     specialCustomers = []
+    userNames = []
     for x in temp_data:
         specialCustomers.append(x[0])
-    return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers,
+        userNames.append(users.find({"_id": x[0]})[0]['user_name'])
+    return render_template("./specialCustomers/viewSpecialCustomers.html", data=specialCustomers, userNames=userNames,
                            len=len(specialCustomers))
 
 
-@app.route('/specialCustomers/deleteSpecialCustomers/<int:rfid>')
+@app.route('/specialCustomers//deleteSpecialCustomers/<int:rfid>')
 def deleteSpecialCustomers(rfid):
     tableName = str(session['admin_id']) + "__special"
     query = "DELETE FROM " + tableName + " WHERE rfid=%s"
@@ -195,6 +197,7 @@ def deleteSpecialCustomers(rfid):
     return redirect(url_for("admin_dashboard"))
 
 
+# Change Password Admin Route
 @app.route('/changePassword', methods=["POST", "GET"])
 def changeAdminPassword():
     if request.method == "POST":
