@@ -440,11 +440,18 @@ def file(filename):
     return mongo.send_file(filename)
 
 
+@app.route('/delete_file/<int:index>')
+def deleteImage(index):
+    userDetails = users.find({"_id": session['user_id']})[0]
+    userImages = userDetails['user_images']
+    del userImages[index]
+    users.find_one_and_update({'_id': session['user_id']}, {'$set': {'user_images': userImages}})
+    return redirect(url_for('user_dashboard'))
+
+
 @app.route('/user/seeImages')
 def seeImages():
     userDetails = users.find({"_id": session['user_id']})[0]
-    for x in userDetails['user_images']:
-        print(x)
     return render_template('./user/userImages/seeImages.html', images=userDetails['user_images'],
                            len=len(userDetails['user_images']))
 

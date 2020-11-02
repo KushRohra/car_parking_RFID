@@ -26,7 +26,11 @@
 					<td>{{i+1}}</td>
 					<td>{{images[i]}}</td>
 					<td><img src={{url_for('file', filename=images[i])}} height="150" width="150"></td>
-					<td><a href=""><i class="material-icons">delete_forever</i></a></td>
+					{% if len == 1 %}
+						<td>Atleast one authorized user is required</td>
+					{% else %}
+						<td><a href={{url_for('deleteImage', index=i)}}><i class="material-icons">delete_forever</i></a></td>
+					{% endif %}
 				</tr>
 			</tbody>
 			{% endfor %}
