@@ -196,7 +196,7 @@ def deleteSpecialCustomers(rfid):
 
 
 @app.route('/changePassword', methods=["POST", "GET"])
-def changePassword():
+def changeAdminPassword():
     if request.method == "POST":
         password = request.form.get("password")
         repeatPassword = request.form.get("repeat_password")
@@ -425,6 +425,15 @@ def user_login():
     return render_template('./user/user_login.html', message=message)
 
 
+@app.route('/user/changePassword', methods=["POST", "GET"])
+def changeUserPassword():
+    if request.method == "POST":
+        newPassword = request.form.get("password")
+        users.find_one_and_update({'_id': session['user_id']}, {'$set': {'password': newPassword}})
+        return redirect(url_for('user_dashboard'))
+    return render_template('./user/changePassword.html')
+
+
 # User Image Releated Routes
 @app.route('/file/<filename>')
 def file(filename):
@@ -440,7 +449,7 @@ def seeImages():
                            len=len(userDetails['user_images']))
 
 
-# User Balance Routs
+# User Balance Routes
 @app.route('/user/addBalance', methods=["POST", "GET"])
 def addBalance():
     userDetails = users.find({"_id": session['user_id']})[0]
