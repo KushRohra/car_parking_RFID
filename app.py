@@ -451,6 +451,14 @@ def seeImages():
 
 @app.route('/user/addImages', methods=["POST", "GET"])
 def addImages():
+    if request.method == "POST":
+        user_image = request.files.get("user_image", 'rb')
+        userDetails = users.find({"_id": session['user_id']})[0]
+        mongo.save_file(user_image.filename, user_image)
+        userImages = userDetails['user_images']
+        userImages.append(user_image.filename)
+        users.find_one_and_update({'_id': session['user_id']}, {'$set': {'user_images': userImages}})
+        return redirect(url_for('user_dashboard'))
     return render_template('./user/userImages/addImages.html')
 
 
