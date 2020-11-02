@@ -155,6 +155,7 @@ def admin_dashboard():
 # Special Customers Routes
 @app.route('/specialCustomers/addSpecialCustomers', methods=["POST", "GET"])
 def addSpecialCustomers():
+    message = ""
     if request.method == "POST":
         tableName = str(session['admin_id']) + "__special"
         existingCustomers = []
@@ -163,6 +164,10 @@ def addSpecialCustomers():
         for x in result:
             existingCustomers.append(x[0])
         rfid = int(request.form.get('rfid'))
+        # Check if the rfid of someone entered is actuall valid or not, i.e, it has a entry in user database
+        if len(list(users.find({'_id': rfid}))) == 0:
+            message = "No such user exists with an RFID of " + str(rfid) + ". Confirm the RFID from your Customer"
+            return render_template("./specialCustomers/addSpecialCustomers.html", message=message)
         # To avoid adding the same entry more than one time
         if rfid not in existingCustomers:
             query = "INSERT INTO " + tableName + "(rfid) VALUES(%s)"
@@ -170,7 +175,7 @@ def addSpecialCustomers():
             mycursor.execute(query, args)
             mydb.commit()
         return redirect(url_for("admin_dashboard"))
-    return render_template("./specialCustomers/addSpecialCustomers.html")
+    return render_template("./specialCustomers/addSpecialCustomers.html", message=message)
 
 
 @app.route('/specialCustomers/viewSpecialCustomers')
