@@ -418,7 +418,7 @@ def user_login():
         else:
             userDetails = users.find({"_id": id})[0]
             if password != userDetails['password']:
-                    message = "Enter Correct Password"
+                message = "Enter Correct Password"
             elif password == userDetails['password']:
                 session['user_id'] = id
                 return redirect(url_for('user_dashboard'))
@@ -430,12 +430,27 @@ def user_login():
 def file(filename):
     return mongo.send_file(filename)
 
+
 @app.route('/user/seeImages')
 def seeImages():
     userDetails = users.find({"_id": session['user_id']})[0]
     for x in userDetails['user_images']:
         print(x)
-    return render_template('./user/userImages/seeImages.html', images=userDetails['user_images'], len=len(userDetails['user_images']))
+    return render_template('./user/userImages/seeImages.html', images=userDetails['user_images'],
+                           len=len(userDetails['user_images']))
+
+
+# User Balance Routs
+@app.route('/user/addBalance', methods=["POST", "GET"])
+def addBalance():
+    userDetails = users.find({"_id": session['user_id']})[0]
+    balance = userDetails['balance']
+    if request.method == "POST":
+        balanceToBeAdded = int(request.form.get("addBalance"))
+        newBalance = balanceToBeAdded + balance
+        users.find_one_and_update({'_id': session['user_id']}, {'$set': {'balance': newBalance}})
+        return redirect(url_for('user_dashboard'))
+    return render_template('./user/userBalance/userBalance.html', balance=balance)
 
 
 # Logout Routes

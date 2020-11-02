@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add Money to Your Card</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+	<div class="container">
+		<br>
+		<a href="../user_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<p>Current Balance: Rs.{{balance}}</p>
+		<h4>Add Money to Your Card</h4>
+		<div class="row">
+			<form method="POST" class="col s12">
+				<div class="row">
+					<div class="input-field col s6">
+						Amount to be Added: <input name="addBalance" type="number" class="validate" required>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s5">
+						<button type="submit" class="btn">Add Balance</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
