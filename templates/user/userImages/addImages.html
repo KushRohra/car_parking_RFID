@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Authorize More People</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<style type="text/css"></style>
+</head>
+<body>
+	<div class="container">
+		<h2 class="display-2">Add an Image of the person you want to authorize</h2>
+		<br>
+		<div class="row">
+			<form method="POST" class="col s12" enctype="multipart/form-data"
+				<div class="row">
+					<div class="col s12">
+						Upload Your Image: <input type="file" name="user_image" required />
+						<p>(The name of the file on your machine will be used to save the file)</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s5">
+						<button type="submit" class="btn" id="submitBtn">Authorize Person</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script type=text/javascript src="{{url_for('static', filename='js/user/user_register.js') }}"></script>
+</body>
+</html>

@@ -434,7 +434,7 @@ def changeUserPassword():
     return render_template('./user/changePassword.html')
 
 
-# User Image Releated Routes
+# User Image Related Routes
 @app.route('/file/<filename>')
 def file(filename):
     return mongo.send_file(filename)
@@ -447,6 +447,11 @@ def seeImages():
         print(x)
     return render_template('./user/userImages/seeImages.html', images=userDetails['user_images'],
                            len=len(userDetails['user_images']))
+
+
+@app.route('/user/addImages', methods=["POST", "GET"])
+def addImages():
+    return render_template('./user/userImages/addImages.html')
 
 
 # User Balance Routes
