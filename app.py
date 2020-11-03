@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from pymongo import MongoClient
 from bubbleSort import *
 from flask_pymongo import PyMongo
+import cv2
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -31,9 +32,9 @@ allAdmin = mycursor.fetchall()
 @app.before_request
 def before_request():
     g.admin = None
-    if 'user_id' in session:
+    if 'admin_id' in session:
         for x in allAdmin:
-            if x[0] == session['user_id']:
+            if x[0] == session['admin_id']:
                 g.admin = x
 
 
@@ -383,6 +384,15 @@ def deleteAdminAccount():
     mydb.commit()
     return redirect('/')
 
+
+@app.route('/entry/vehicleEntry', methods=["POST", "GET"])
+def vehicleEntry():
+    return render_template('vehicleEntry/vehicleEntry.html')
+
+
+@app.route('/exit/vehicleExit', methods=["POST", "GET"])
+def vehicleExit():
+    return render_template('vehicleExit/vehicleExit.html')
 
 
 # User Routes
