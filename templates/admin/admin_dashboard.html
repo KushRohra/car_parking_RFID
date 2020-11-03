@@ -16,8 +16,10 @@
 		<ul class="collection">
 			<a href=""><li class="collection-item">Entry/Exit of Vehicle</li></a>
 			<a href="changePassword"><li class="collection-item">Change Password</li></a>
-			<a href="specialCustomers/addSpecialCustomers"><li class="collection-item">Add Special Customers</li></a>
-			<a href="specialCustomers/viewSpecialCustomers"><li class="collection-item">View All Special Customers</li></a>
+			{% if specialCustomerExist == 1 %}
+				<a href="specialCustomers/addSpecialCustomers"><li class="collection-item">Add Special Customers</li></a>
+				<a href="specialCustomers/viewSpecialCustomers"><li class="collection-item">View All Special Customers</li></a>
+			{% endif %}
 			<a href="parking/parkingStatus2"><li class="collection-item">View 2 Wheeler Parking Status</li></a>
 			<a href="parking/parkingStatus4"><li class="collection-item">View 4 wheeler Parking Status</li></a>
 			<a href="parking/addParking"><li class="collection-item">Add Extra Parking Slots</li></a>

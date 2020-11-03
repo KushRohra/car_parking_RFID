@@ -149,7 +149,9 @@ def admin_showId():
 def admin_dashboard():
     if session['admin_id'] is None:
         return redirect(url_for('admin_login'))
-    return render_template('./admin/admin_dashboard.html')
+    mycursor.execute("SELECT special_customers FROM admintable WHERE shop_id=" + str(session['admin_id']))
+    specialCustomerExist = int(mycursor.fetchone()[0])
+    return render_template('./admin/admin_dashboard.html', specialCustomerExist=specialCustomerExist)
 
 
 # Special Customers Routes
