@@ -133,6 +133,9 @@ def admin_register():
             mycursor.execute(query, args)
             mydb.commit()
 
+        collectionName = str(id) + "_parkingDetails"
+        db.create_collection(collectionName)
+
         session['admin_id'] = id
 
         return redirect(url_for('admin_showId'))
