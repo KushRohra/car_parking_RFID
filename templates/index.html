@@ -9,10 +9,10 @@
 			margin-top: 10%;
 		}
 		.admin {
-			background-image: url(../static/img/admin.jpg);
+			background-image: url({{ url_for('static', filename='img/admin.jpg') }});
 		}
 		.user {
-			background-image: url(../static/img/user.jpg);	
+			background-image: url({{ url_for('static', filename='img/user.jpg') }});
 		}
 	</style>
 </head>

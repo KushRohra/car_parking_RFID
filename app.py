@@ -384,6 +384,8 @@ def deleteAdminAccount():
     mycursor.execute("DROP TABLE " + id + "__pricing")
     mycursor.execute("DROP TABLE " + id + "__special")
     mycursor.execute("DELETE FROM admintable WHERE shop_id=" + id)
+    collectionName = id + "_parkingDetails"
+    db[collectionName].drop()
     mydb.commit()
     return redirect('/')
 
