@@ -490,6 +490,13 @@ def addBalance():
     return render_template('./user/userBalance/userBalance.html', balance=balance)
 
 
+# Delete User Account Route
+@app.route('/deleteUserAccount')
+def deleteUserAccount():
+    users.delete_one({"_id": session['user_id']})
+    return redirect('/')
+
+
 # Logout Routes
 @app.route('/logout')
 def logout():
