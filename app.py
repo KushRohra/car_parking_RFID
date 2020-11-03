@@ -369,6 +369,20 @@ def changeDiscount():
     return render_template('./discount/changeDiscount.html', message=message, discount=currentDiscount)
 
 
+# Delete Admin Account
+@app.route('/deleteAdminAccount')
+def deleteAdminAccount():
+    id = str(session['admin_id'])
+    mycursor.execute("DROP TABLE " + id + "__parking2")
+    mycursor.execute("DROP TABLE " + id + "__parking4")
+    mycursor.execute("DROP TABLE " + id + "__pricing")
+    mycursor.execute("DROP TABLE " + id + "__special")
+    mycursor.execute("DELETE FROM admintable WHERE shop_id=" + id)
+    mydb.commit()
+    return redirect('/')
+
+
+
 # User Routes
 @app.route('/user_register', methods=["GET", "POST"])
 def user_register():
