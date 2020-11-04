@@ -411,12 +411,17 @@ def vehicleEntry():
         specialCustomersList = []
         for customer in data:
             specialCustomersList.append(customer[0])
+        isSpecialCustomer = 0
+        discount = 0
         if rfid not in specialCustomersList:
             for x in results:
                 if x[1] == 0:
                     lotNo = x[0]
                     break
         else:
+            isSpecialCustomer = 1
+            mycursor.execute("SELECT discount from admintable WHERE shop_id=" + id)
+            discount = mycursor.fetchone()[0]
             for x in reversed(results):
                 if x[1] == 0:
                     lotNo = x[0]
@@ -435,7 +440,7 @@ def vehicleEntry():
             # NoSQL TABLE UPDATE
             collectionName = id + "_parkingDetails"
             parking = db[collectionName]
-            details = {"vehicleType": vehicleType, "rfid": rfid, "entryTime": entryTime, "slot": lotNo}
+            details = {"vehicleType": vehicleType, "rfid": rfid, "entryTime": entryTime, "slot": lotNo, "specialCustomer": isSpecialCustomer, "discount": discount}
             parking.insert_one(details)
 
             return render_template('vehicleEntry/vehicleEntry.html',
