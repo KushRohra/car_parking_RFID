@@ -396,7 +396,7 @@ def vehicleEntry():
     if request.method == "POST":
         id = str(session['admin_id'])
         vehicleType = int(request.form.get("vehicleType"))
-        rfid = request.form.get("rfid")
+        rfid = int(request.form.get("rfid"))
         entryTime = datetime.now()
         if vehicleType == 2:
             tableName = id + "__parking2"
@@ -405,15 +405,39 @@ def vehicleEntry():
         mycursor.execute("SELECT lot_no, parked FROM " + tableName)
         results = mycursor.fetchall()
         lotNo = -1
-        for x in results:
-            if x[1] == 0:
-                lotNo = x[0]
-                break
+        specialCustomersTableName = id + "__special"
+        mycursor.execute("SELECT rfid FROM " + specialCustomersTableName)
+        data = mycursor.fetchall()
+        specialCustomersList = []
+        for customer in data:
+            specialCustomersList.append(customer[0])
+        if rfid not in specialCustomersList:
+            for x in results:
+                if x[1] == 0:
+                    lotNo = x[0]
+                    break
+        else:
+            for x in reversed(results):
+                if x[1] == 0:
+                    lotNo = x[0]
+                    break
         if lotNo == -1:
             return render_template('vehicleEntry/vehicleEntry.html',
                                    message="Parking Lot Full for " + str(vehicleType) + " Wheeler Vehicles",
                                    color="red")
         else:
+            # SQL TABLE UPDATE
+            query = "UPDATE " + tableName + " SET parked=%s, rfid=%s WHERE lot_no=%s"
+            args = (1, rfid, lotNo,)
+            mycursor.execute(query, args)
+            mydb.commit()
+
+            # NoSQL TABLE UPDATE
+            collectionName = id + "_parkingDetails"
+            parking = db[collectionName]
+            details = {"vehicleType": vehicleType, "rfid": rfid, "entryTime": entryTime, "slot": lotNo}
+            parking.insert_one(details)
+
             return render_template('vehicleEntry/vehicleEntry.html',
                                    message="Parking Slot Allotted = " + str(lotNo) + " for vehicle with RFID = " + str(
                                        rfid), color="green")
