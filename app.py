@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from bubbleSort import *
 from flask_pymongo import PyMongo
 import cv2
+from datetime import datetime
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -392,7 +393,31 @@ def deleteAdminAccount():
 
 @app.route('/entry/vehicleEntry', methods=["POST", "GET"])
 def vehicleEntry():
-    return render_template('vehicleEntry/vehicleEntry.html')
+    if request.method == "POST":
+        id = str(session['admin_id'])
+        vehicleType = int(request.form.get("vehicleType"))
+        rfid = request.form.get("rfid")
+        entryTime = datetime.now()
+        if vehicleType == 2:
+            tableName = id + "__parking2"
+        else:
+            tableName = id + "__parking4"
+        mycursor.execute("SELECT lot_no, parked FROM " + tableName)
+        results = mycursor.fetchall()
+        lotNo = -1
+        for x in results:
+            if x[1] == 0:
+                lotNo = x[0]
+                break
+        if lotNo == -1:
+            return render_template('vehicleEntry/vehicleEntry.html',
+                                   message="Parking Lot Full for " + str(vehicleType) + " Wheeler Vehicles",
+                                   color="red")
+        else:
+            return render_template('vehicleEntry/vehicleEntry.html',
+                                   message="Parking Slot Allotted = " + str(lotNo) + " for vehicle with RFID = " + str(
+                                       rfid), color="green")
+    return render_template('vehicleEntry/vehicleEntry.html', message="", color="green")
 
 
 @app.route('/exit/vehicleExit', methods=["POST", "GET"])
