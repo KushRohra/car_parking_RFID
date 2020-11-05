@@ -18,12 +18,12 @@ app = Flask(__name__)
 app.secret_key = '1234'
 
 cluster = MongoClient(
-    "mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority")
+    "mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid>?retryWrites=true&w=majority")
 db = cluster["car_parking_rfid"]
 users = db["users"]
 
 app.config[
-    "MONGO_URI"] = "mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid?retryWrites=true&w=majority"
+    "MONGO_URI"] = "mongodb+srv://KushRohra:kush5255@carparkingrfid.tufes.mongodb.net/car_parking_rfid>?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
 mycursor.execute("SELECT * FROM admintable")
@@ -395,6 +395,10 @@ def deleteAdminAccount():
 def vehicleEntry():
     if request.method == "POST":
         id = str(session['admin_id'])
+        mycursor.execute("SELECT shop_name FROM admintable WHERE shop_id=" + id)
+        parkingName = mycursor.fetchone()[0]
+
+        # getting all form details
         vehicleType = int(request.form.get("vehicleType"))
         rfid = int(request.form.get("rfid"))
         entryTime = datetime.now()
@@ -405,6 +409,8 @@ def vehicleEntry():
         mycursor.execute("SELECT lot_no, parked FROM " + tableName)
         results = mycursor.fetchall()
         lotNo = -1
+
+        # checking if it is a special customer
         specialCustomersTableName = id + "__special"
         mycursor.execute("SELECT rfid FROM " + specialCustomersTableName)
         data = mycursor.fetchall()
@@ -413,6 +419,8 @@ def vehicleEntry():
             specialCustomersList.append(customer[0])
         isSpecialCustomer = 0
         discount = 0
+
+        # assigning parking lot based on the outcome of previous step
         if rfid not in specialCustomersList:
             for x in results:
                 if x[1] == 0:
@@ -426,11 +434,13 @@ def vehicleEntry():
                 if x[1] == 0:
                     lotNo = x[0]
                     break
+        # checking if space is available or not and showing messages
         if lotNo == -1:
             return render_template('vehicleEntry/vehicleEntry.html',
                                    message="Parking Lot Full for " + str(vehicleType) + " Wheeler Vehicles",
                                    color="red")
         else:
+            # Parking Lot Collection Update
             # SQL TABLE UPDATE
             query = "UPDATE " + tableName + " SET parked=%s, rfid=%s WHERE lot_no=%s"
             args = (1, rfid, lotNo,)
@@ -440,12 +450,24 @@ def vehicleEntry():
             # NoSQL TABLE UPDATE
             collectionName = id + "_parkingDetails"
             parking = db[collectionName]
-            details = {"vehicleType": vehicleType, "rfid": rfid, "entryTime": entryTime, "slot": lotNo, "specialCustomer": isSpecialCustomer, "discount": discount}
+            details = {"vehicleType": vehicleType, "rfid": rfid, "entryTime": entryTime, "slot": lotNo,
+                       "specialCustomer": isSpecialCustomer, "discount": discount}
             parking.insert_one(details)
+
+            # Getting last entry in mongoDB releated to the particular user
+            refer_id = parking.find({"rfid": rfid}).sort([("_id", -1)]).limit(1)[0]['_id']
+
+            # User Collection Update
+            userParkingDetails = users.find({"_id": rfid})[0]['parkingDetails']
+            details = {"parkingName": parkingName, "slot": lotNo, "entryTime": entryTime, "vehicleType": vehicleType,
+                       "referId": refer_id}
+            userParkingDetails.append(details)
+            users.find_one_and_update({'_id': rfid}, {'$set': {'parkingDetails': userParkingDetails}})
 
             return render_template('vehicleEntry/vehicleEntry.html',
                                    message="Parking Slot Allotted = " + str(lotNo) + " for vehicle with RFID = " + str(
                                        rfid), color="green")
+
     return render_template('vehicleEntry/vehicleEntry.html', message="", color="green")
 
 
