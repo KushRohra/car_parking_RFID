@@ -489,7 +489,8 @@ def vehicleExit():
         userParkingDetails = userDetails['parkingDetails']
         lastEntry = len(userParkingDetails) - 1
         details = parking.find({"_id": userParkingDetails[lastEntry]['referId']})[0]
-        print(details)
+        print("userDetails = ", userDetails)
+        print("parkingLotDetails = ", details)
         timeDiff = (exitTime - details['entryTime']).total_seconds()
         print(timeDiff)
 
@@ -503,13 +504,29 @@ def vehicleExit():
         print(costDetails)
 
         # Calculating Price User has to pay
-        price = 0
+        price = -1
         for x in costDetails:
             seconds = x[0] * 60 * 60
-            if timeDiff < seconds :
+            if timeDiff < seconds:
                 price = x[1]
                 break
+        if price == -1:
+            price = costDetails[len(costDetails) - 1][1]
+        discountPercentage = float(details['discount'])
+        price -= ((discountPercentage * price) / 100)
         print(price)
+
+        # Changing Parking Lot Status
+        lotNo = details['slot']
+        parkingTableName = id + "__parking2"
+        mycursor.execute("UPDATE " + parkingTableName + " SET parked=0, rfid=0 WHERE lot_no=" + str(lotNo))
+        mydb.commit()
+
+        # Deducting Cost from user's card
+        newBalance = userDetails['balance'] - price
+        #parking.find_one_and_update({})
+
+
 
     return render_template('vehicleExit/vehicleExit.html')
 
