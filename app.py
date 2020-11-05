@@ -484,21 +484,32 @@ def vehicleExit():
         vehicleType = int(request.form.get("vehicleType"))
         rfid = int(request.form.get("rfid"))
 
-        userParkingDetails = users.find({"_id": rfid})[0]['parkingDetails']
+        # Calculating Time Diff between entry Time and exit Time
+        userDetails = users.find({"_id": rfid})[0]
+        userParkingDetails = userDetails['parkingDetails']
         lastEntry = len(userParkingDetails) - 1
         details = parking.find({"_id": userParkingDetails[lastEntry]['referId']})[0]
         print(details)
-
         timeDiff = (exitTime - details['entryTime']).total_seconds()
         print(timeDiff)
 
-        costTabeleName = id + "__pricing"
+        # Getting Cost Details
+        costTableName = id + "__pricing"
         if vehicleType == 2:
-            mycursor.execute("SELECT hrs, cost FROM " + costTabeleName + " WHERE flag=0")
+            mycursor.execute("SELECT hrs, cost FROM " + costTableName + " WHERE flag=0")
         else:
-            mycursor.execute("SELECT hrs, cost FROM " + costTabeleName + " WHERE flag=1")
-        costDeatils = mycursor.fetchall()
-        print(costDeatils)
+            mycursor.execute("SELECT hrs, cost FROM " + costTableName + " WHERE flag=1")
+        costDetails = mycursor.fetchall()
+        print(costDetails)
+
+        # Calculating Price User has to pay
+        price = 0
+        for x in costDetails:
+            seconds = x[0] * 60 * 60
+            if timeDiff < seconds :
+                price = x[1]
+                break
+        print(price)
 
     return render_template('vehicleExit/vehicleExit.html')
 
