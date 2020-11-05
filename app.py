@@ -488,11 +488,11 @@ def vehicleExit():
         userDetails = users.find({"_id": rfid})[0]
         userParkingDetails = userDetails['parkingDetails']
         lastEntry = len(userParkingDetails) - 1
-        details = parking.find({"_id": userParkingDetails[lastEntry]['referId']})[0]
-        print("userDetails = ", userDetails)
-        print("parkingLotDetails = ", details)
-        timeDiff = (exitTime - details['entryTime']).total_seconds()
-        print(timeDiff)
+        referId = userParkingDetails[lastEntry]['referId']
+        details = parking.find({"_id": referId})[0]
+
+        entryTime = details['entryTime']
+        timeDiff = (exitTime - entryTime).total_seconds()
 
         # Getting Cost Details
         costTableName = id + "__pricing"
@@ -501,7 +501,6 @@ def vehicleExit():
         else:
             mycursor.execute("SELECT hrs, cost FROM " + costTableName + " WHERE flag=1")
         costDetails = mycursor.fetchall()
-        print(costDetails)
 
         # Calculating Price User has to pay
         price = -1
@@ -512,23 +511,44 @@ def vehicleExit():
                 break
         if price == -1:
             price = costDetails[len(costDetails) - 1][1]
-        discountPercentage = float(details['discount'])
-        price -= ((discountPercentage * price) / 100)
-        print(price)
+        isSpecialCustomer = details['specialCustomer']
+        discountPercentage = details['discount']
+        price -= float((discountPercentage * price) / 100)
 
         # Changing Parking Lot Status
         lotNo = details['slot']
-        parkingTableName = id + "__parking2"
+        if vehicleType == 2:
+            parkingTableName = id + "__parking2"
+        else:
+            parkingTableName = id + "__parking4"
         mycursor.execute("UPDATE " + parkingTableName + " SET parked=0, rfid=0 WHERE lot_no=" + str(lotNo))
         mydb.commit()
 
         # Deducting Cost from user's card
         newBalance = userDetails['balance'] - price
-        #parking.find_one_and_update({})
+        users.find_one_and_update({"_id": rfid}, {'$set': {'balance': newBalance}})
 
+        # Adding some more details to users Parking Details
+        userParkingDetails[lastEntry]["cost"] = price
+        userParkingDetails[lastEntry]["exitTime"] = exitTime
+        users.find_one_and_update({"_id": rfid}, {'$set': {'parkingDetails': userParkingDetails}})
 
+        # Adding more details to parkingDetails of the Parking Lot
+        parking.find_one_and_update({"_id": referId}, {'$set': {
+            '_id': referId,
+            'vehicleType': vehicleType,
+            'rfid': rfid,
+            'entryTime': entryTime,
+            'slot': lotNo,
+            'specialCustomer': isSpecialCustomer,
+            'discount': discountPercentage,
+            'cost': price,
+            'exitTime': exitTime
+        }})
 
-    return render_template('vehicleExit/vehicleExit.html')
+        return render_template('vehicleExit/vehicleExit.html', message="Your total price is Rs. " + str(price) + " and is deducted from your card balance", color="green")
+
+    return render_template('vehicleExit/vehicleExit.html', message="", color="green")
 
 
 # User Routes
