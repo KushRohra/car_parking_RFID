@@ -473,6 +473,33 @@ def vehicleEntry():
 
 @app.route('/exit/vehicleExit', methods=["POST", "GET"])
 def vehicleExit():
+    if request.method == "POST":
+        id = str(session['admin_id'])
+        collectionName = id + "_parkingDetails"
+        parking = db[collectionName]
+
+        exitTime = datetime.now()
+
+        # Getting all the details from form
+        vehicleType = int(request.form.get("vehicleType"))
+        rfid = int(request.form.get("rfid"))
+
+        userParkingDetails = users.find({"_id": rfid})[0]['parkingDetails']
+        lastEntry = len(userParkingDetails) - 1
+        details = parking.find({"_id": userParkingDetails[lastEntry]['referId']})[0]
+        print(details)
+
+        timeDiff = (exitTime - details['entryTime']).total_seconds()
+        print(timeDiff)
+
+        costTabeleName = id + "__pricing"
+        if vehicleType == 2:
+            mycursor.execute("SELECT hrs, cost FROM " + costTabeleName + " WHERE flag=0")
+        else:
+            mycursor.execute("SELECT hrs, cost FROM " + costTabeleName + " WHERE flag=1")
+        costDeatils = mycursor.fetchall()
+        print(costDeatils)
+
     return render_template('vehicleExit/vehicleExit.html')
 
 

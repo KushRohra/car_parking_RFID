@@ -1,1 +1,53 @@
-vehicle Exit
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vehicle Exit</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<style>
+		#messageDisplay {
+			font-size: 1.5rem;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<br>
+		<a class="waves-effect waves-light btn" href="../admin_dashboard">Go To Dashboard</a>
+		<br>
+		<h2>Vehicle Exit</h2>
+		<br>
+		<div class="row">
+			<form method="POST" class="col s12">
+				<h5>Type of Vehcile</h5>
+				<div class="row">
+					<div class="col s6">
+						<label>
+							<input name="vehicleType" type="radio" value="2" required />
+							<span>2 Wheeler Parking</span>
+						</label>
+					</div>
+					<div class="col s6">
+						<label>
+							<input name="vehicleType" type="radio" value="4" required />
+							<span>4 Wheeler Parking</span>
+						</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s4">
+						<p>RFID Of Vehicle</p>
+						<input type="number" name="rfid" class="validate" min="0" required />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s6">
+						<button type="submit" class="btn">Submit</button>
+					</div>
+				</div>
+			</form>
+			<br><br>
+			<span id="messageDisplay" style="color:{{color}};">{{message}}</span>
+		</div>
+	</div>
+</body>
+</html>
