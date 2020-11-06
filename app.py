@@ -434,10 +434,18 @@ def vehicleEntry():
                 if x[1] == 0:
                     lotNo = x[0]
                     break
+
+        # Checking if balance of user is positive or restrict him from entering the parking lot
+        balance = users.find({"_id": rfid})[0]['balance']
+
         # checking if space is available or not and showing messages
         if lotNo == -1:
             return render_template('vehicleEntry/vehicleEntry.html',
                                    message="Parking Lot Full for " + str(vehicleType) + " Wheeler Vehicles",
+                                   color="red")
+        elif balance < 0:
+            return render_template('vehicleEntry/vehicleEntry.html',
+                                   message="Your balance is less than 0. Recharge your balance to enter the parking lot",
                                    color="red")
         else:
             # Parking Lot Collection Update
