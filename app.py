@@ -3,8 +3,10 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from pymongo import MongoClient
 from bubbleSort import *
 from flask_pymongo import PyMongo
-import cv2
+from takeImage import *
 from datetime import datetime
+import cv2
+from PIL import Image
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -370,7 +372,7 @@ def changeDiscount():
         if specialCustomers == 0:
             discountRate = 0
         mycursor.execute(
-            "UPDATE admintable SET discount=" + discountRate + " WHERE shop_id=" + str(session['admin_id']))
+            "UPDATE admintable SET discount=" + str(discountRate) + " WHERE shop_id=" + str(session['admin_id']))
         mydb.commit()
         return redirect(url_for('admin_dashboard'))
     return render_template('./discount/changeDiscount.html', message=message, discount=currentDiscount)
@@ -402,6 +404,7 @@ def vehicleEntry():
         vehicleType = int(request.form.get("vehicleType"))
         rfid = int(request.form.get("rfid"))
         entryTime = datetime.now()
+
         if vehicleType == 2:
             tableName = id + "__parking2"
         else:
@@ -448,6 +451,12 @@ def vehicleEntry():
                                    message="Your balance is less than 0. Recharge your balance to enter the parking lot",
                                    color="red")
         else:
+            # Image of the person coming into the parking Lot
+            takeImage()
+            imageName = id + str(entryTime)
+            image = open("img.jpg", "rb")
+            mongo.save_file(imageName, image)
+
             # Parking Lot Collection Update
             # SQL TABLE UPDATE
             query = "UPDATE " + tableName + " SET parked=%s, rfid=%s WHERE lot_no=%s"
@@ -459,7 +468,7 @@ def vehicleEntry():
             collectionName = id + "_parkingDetails"
             parking = db[collectionName]
             details = {"vehicleType": vehicleType, "rfid": rfid, "entryTime": entryTime, "slot": lotNo,
-                       "specialCustomer": isSpecialCustomer, "discount": discount}
+                       "specialCustomer": isSpecialCustomer, "discount": discount, "image": imageName}
             parking.insert_one(details)
 
             # Getting last entry in mongoDB releated to the particular user
@@ -468,7 +477,7 @@ def vehicleEntry():
             # User Collection Update
             userParkingDetails = users.find({"_id": rfid})[0]['parkingDetails']
             details = {"parkingName": parkingName, "slot": lotNo, "entryTime": entryTime, "vehicleType": vehicleType,
-                       "referId": refer_id}
+                       "referId": refer_id, "image": imageName}
             userParkingDetails.append(details)
             users.find_one_and_update({'_id': rfid}, {'$set': {'parkingDetails': userParkingDetails}})
 
@@ -660,6 +669,7 @@ def seeImages():
 def addImages():
     if request.method == "POST":
         user_image = request.files.get("user_image", 'rb')
+        print(user_image)
         imageName = request.form.get("imageName")
         userDetails = users.find({"_id": session['user_id']})[0]
         mongo.save_file(imageName, user_image)
