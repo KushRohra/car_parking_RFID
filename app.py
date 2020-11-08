@@ -554,7 +554,8 @@ def vehicleExit():
             'exitTime': exitTime
         }})
 
-        return render_template('vehicleExit/vehicleExit.html', message="Your total price is Rs. " + str(price) + " and is deducted from your card balance", color="green")
+        return render_template('vehicleExit/vehicleExit.html', message="Your total price is Rs. " + str(
+            price) + " and is deducted from your card balance", color="green")
 
     return render_template('vehicleExit/vehicleExit.html', message="", color="green")
 
@@ -579,8 +580,9 @@ def user_register():
         else:
             balance = 100
         user_image = request.files.get("user_image", 'rb')
-        mongo.save_file(user_image.filename, user_image)
-        userImages = [user_image.filename]
+        imageName = request.form.get("imageName")
+        mongo.save_file(imageName, user_image)
+        userImages = [imageName]
         parkingDetails = []
         users.insert_one({"_id": current_id, "user_name": user_name, "user_email": user_email, "password": password,
                           "customerType": customerType, "balance": balance, "user_images": userImages,
@@ -658,10 +660,11 @@ def seeImages():
 def addImages():
     if request.method == "POST":
         user_image = request.files.get("user_image", 'rb')
+        imageName = request.form.get("imageName")
         userDetails = users.find({"_id": session['user_id']})[0]
-        mongo.save_file(user_image.filename, user_image)
+        mongo.save_file(imageName, user_image)
         userImages = userDetails['user_images']
-        userImages.append(user_image.filename)
+        userImages.append(imageName)
         users.find_one_and_update({'_id': session['user_id']}, {'$set': {'user_images': userImages}})
         return redirect(url_for('user_dashboard'))
     return render_template('./user/userImages/addImages.html')
