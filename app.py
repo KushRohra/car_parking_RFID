@@ -5,6 +5,7 @@ from bubbleSort import *
 from flask_pymongo import PyMongo
 import cv2
 from datetime import datetime
+from takeImage import *
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -448,6 +449,12 @@ def vehicleEntry():
                                    message="Your balance is less than 0. Recharge your balance to enter the parking lot",
                                    color="red")
         else:
+            # Take image of the driver
+            takeImage()
+            imageName = id + " " + str(entryTime)
+            image = open("image.jpg", "rb")
+            mongo.save_file(imageName, image)
+
             # Parking Lot Collection Update
             # SQL TABLE UPDATE
             query = "UPDATE " + tableName + " SET parked=%s, rfid=%s WHERE lot_no=%s"
@@ -459,7 +466,7 @@ def vehicleEntry():
             collectionName = id + "_parkingDetails"
             parking = db[collectionName]
             details = {"vehicleType": vehicleType, "rfid": rfid, "entryTime": entryTime, "slot": lotNo,
-                       "specialCustomer": isSpecialCustomer, "discount": discount}
+                       "specialCustomer": isSpecialCustomer, "discount": discount, "image": imageName}
             parking.insert_one(details)
 
             # Getting last entry in mongoDB releated to the particular user
@@ -468,7 +475,7 @@ def vehicleEntry():
             # User Collection Update
             userParkingDetails = users.find({"_id": rfid})[0]['parkingDetails']
             details = {"parkingName": parkingName, "slot": lotNo, "entryTime": entryTime, "vehicleType": vehicleType,
-                       "referId": refer_id}
+                       "referId": refer_id, "image": imageName}
             userParkingDetails.append(details)
             users.find_one_and_update({'_id': rfid}, {'$set': {'parkingDetails': userParkingDetails}})
 
