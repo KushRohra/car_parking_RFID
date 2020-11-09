@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Parking Details</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+	<div class="container">
+		<br>
+		<a href="../user_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<h4>Your Parking Details are as follows</h4>
+		<h6>Total Money Spent(till now): Rs. {{totalMoneySpent}}</h6>
+		<table class="highlight centered">
+			<thead>
+				<tr>
+					<th>Serial No.</th>
+					<th>Details</th>
+					<th>Cost</th>
+					<th>Image of the person</th>
+				</tr>
+			</thead>
+			{% for i in range(len) %}
+				<tbody>
+					<tr>
+						<td>{{i+1}}</td>
+						<td>
+							<p>Parking Lot Name : {{parkingDetails[i]['parkingName']}}</p>
+							<p>Parking Slot : {{parkingDetails[i]['slot']}}</p>
+							<p>Vehicle Type : {{parkingDetails[i]['vehicleType']}}</p>
+							<p>Entry Time : {{parkingDetails[i]['entryTime']}}</p>
+							<p>Exit Time : {{parkingDetails[i]['exitTime']}}</p>
+						</td>
+						<td>Rs. {{parkingDetails[i]['cost']}}</td>
+						<td><img src={{url_for('file', filename=parkingDetails[i]['image'])}} height="150" width="150"></td>
+					</tr>
+				</tbody>
+			{% endfor %}
+		</table>
+	</div>
+</body>
+</html>

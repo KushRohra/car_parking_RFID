@@ -677,6 +677,20 @@ def addImages():
     return render_template('./user/userImages/addImages.html')
 
 
+# See All Parking Details of user
+@app.route('/parking/parkingDetails')
+def seeParkingUser():
+    user = users.find({"_id": session['user_id']})[0]
+    parkingDetails = user['parkingDetails']
+    totalMoneySpent = 0
+    for details in parkingDetails:
+        try:
+            totalMoneySpent += details['cost']
+        except:
+            totalMoneySpent += 0
+    return render_template('./user/parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails), totalMoneySpent=totalMoneySpent)
+
+
 # User Balance Routes
 @app.route('/user/addBalance', methods=["POST", "GET"])
 def addBalance():
