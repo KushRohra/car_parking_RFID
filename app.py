@@ -297,6 +297,21 @@ def addParking():
     return render_template('./parking/addParking.html', current2=current2, current4=current4)
 
 
+@app.route('/parking/adminParkingDetails')
+def adminParkingDetails():
+    totalMoneyEarned = 0
+    id = str(session['admin_id'])
+    collectionName = id + "_parkingDetails"
+    parking = db[collectionName]
+    parkingDetails = list(parking.find({}))
+    for details in parkingDetails:
+        print(details)
+        try:
+            totalMoneyEarned += details['cost']
+        except:
+            totalMoneyEarned += 0
+    return render_template('./parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails), totalMoneyEarned=totalMoneyEarned)
+
 # Pricing Routes
 @app.route('/pricing/viewPricing', methods=["GET", "POST"])
 def viewPricing():
@@ -678,7 +693,7 @@ def addImages():
 
 
 # See All Parking Details of user
-@app.route('/parking/parkingDetails')
+@app.route('/parking/userParkingDetails')
 def seeParkingUser():
     user = users.find({"_id": session['user_id']})[0]
     parkingDetails = user['parkingDetails']

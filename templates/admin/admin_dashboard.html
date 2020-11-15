@@ -21,10 +21,13 @@
 				<a href="specialCustomers/addSpecialCustomers"><li class="collection-item">Add Special Customers</li></a>
 				<a href="specialCustomers/viewSpecialCustomers"><li class="collection-item">View All Special Customers</li></a>
 			{% endif %}
+			<a href="parking/adminParkingDetails"><li class="collection-item">View Parking Details</li></a>
 			<a href="parking/parkingStatus2"><li class="collection-item">View 2 Wheeler Parking Status</li></a>
 			<a href="parking/parkingStatus4"><li class="collection-item">View 4 wheeler Parking Status</li></a>
 			<a href="parking/addParking"><li class="collection-item">Add Extra Parking Slots</li></a>
-			<a href="discount/changeDiscount"><li class="collection-item">Change Discount Percentage for Special Customers</li></a>
+			{% if specialCustomerExist == 1 %}
+				<a href="discount/changeDiscount"><li class="collection-item">Change Discount Percentage for Special Customers</li></a>
+			{% endif %}
 			<a href="parking/parkingStatus"><li class="collection-item">View Parking Status</li></a>
 			<a href="pricing/viewPricing"><li class="collection-item">View Pricing Details</li></a>
 			<a href="pricing/changePricing2"><li class="collection-item">Change 2 wheeler Parking Prices</li></a>
