@@ -727,8 +727,13 @@ def addBalance():
         newBalance = balanceToBeAdded + balance
         users.find_one_and_update({'_id': session['user_id']}, {'$set': {'balance': newBalance}})
         return redirect(url_for('user_dashboard'))
-    return render_template('./user/userBalance/userBalance.html', balance=balance)
+    return render_template('./user/userBalance/addBalance.html', balance=balance)
 
+@app.route('/user/transferBalance', methods=["POST", "GET"])
+def transferBalance():
+    userDetails = users.find({"_id": session['user_id']})[0]
+    balance = userDetails['balance']
+    return render_template('./user/userBalance/transferBalance.html', balance=balance, message="", color="")
 
 # Delete User Account Route
 @app.route('/deleteUserAccount')
