@@ -14,12 +14,17 @@
 			<form method="POST" class="col s12">
 				<div class="row">
 					<div class="input-field col s6">
-						Amount to be transferred: <input name="addBalance" type="number" class="validate" required>
+						RFID of the user you want to transfer money to: <input name="rfid" type="number" min="0" class="validate" required>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s6">
+						Amount to be transferred: <input name="transferBalance" type="number" min="0" class="validate" required>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col s5">
-						<button type="submit" class="btn">Add Balance</button>
+						<button type="submit" class="btn">Transfer Balance</button>
 					</div>
 				</div>
 			</form>

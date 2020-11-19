@@ -733,6 +733,21 @@ def addBalance():
 def transferBalance():
     userDetails = users.find({"_id": session['user_id']})[0]
     balance = userDetails['balance']
+    if request.method == "POST":
+        rfid = int(request.form.get("rfid"))
+        user = users.find({"_id": rfid})
+        money = float(request.form.get("transferBalance"))
+        if rfid == session['user_id']:
+            return render_template('./user/userBalance/transferBalance.html', balance=balance, message="You cannot transfer money to your own account", color="red")
+        elif len(list(user)) == 0:
+            return render_template('./user/userBalance/transferBalance.html', balance=balance, message="No such user exists, check the rfid again", color="red")
+        elif money > balance:
+            return render_template('./user/userBalance/transferBalance.html', balance=balance, message="The amount entered exceeds balance in your account", color="red")
+        else:
+            newBalance = users.find({"_id": rfid})[0]['balance'] + money
+            users.find_one_and_update({"_id": session['user_id']}, {'$set': {'balance': balance - money}})
+            users.find_one_and_update({"_id": rfid}, {'$set': {'balance': newBalance}})
+            return redirect(url_for('user_dashboard'))
     return render_template('./user/userBalance/transferBalance.html', balance=balance, message="", color="")
 
 # Delete User Account Route
