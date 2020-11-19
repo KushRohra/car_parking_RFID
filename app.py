@@ -624,7 +624,15 @@ def user_showId():
 
 @app.route('/user_dashboard')
 def user_dashboard():
-    return render_template('./user/user_dashboard.html')
+    user = users.find({"_id": session['user_id']})[0]
+    parkingDetails = user['parkingDetails']
+    flag = 0
+    slot = 0
+    length = len(parkingDetails)
+    if 'exitTime' not in parkingDetails[length - 1]:
+        flag = 1
+        slot = parkingDetails[length - 1]['slot']
+    return render_template('./user/user_dashboard.html', flag=flag, slot=slot)
 
 
 @app.route('/user_login', methods=["GET", "POST"])
@@ -703,6 +711,9 @@ def seeParkingUser():
             totalMoneySpent += details['cost']
         except:
             totalMoneySpent += 0
+    flag = 0
+    if 'exitTime' not in parkingDetails[len(parkingDetails) - 1]:
+        flag = 1
     return render_template('./user/parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails), totalMoneySpent=totalMoneySpent)
 
 

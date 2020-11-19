@@ -19,7 +19,12 @@
 			<a href="parking/userParkingDetails"><li class="collection-item">See All Parking Details</li></a>
 			<a href="user/changePassword"><li class="collection-item">Change Password</li></a>
 			<a href="user/addBalance"><li class="collection-item">Add Balance</li></a>
+			<a href="user/transferBalance"><li class="collection-item">Transfer your Balance to another user</li></a>
 		</ul>
+
+		{% if flag==1 %}
+			<h5 style="color: green">Your vehicle is currently parked in Slot no: {{slot}}</h5>
+		{% endif %}
 		<div>
 			<a href="logout" class="links waves-effect waves-light btn">Logout</a>
 		</div>

@@ -24,14 +24,14 @@
 					<tr>
 						<td>{{i+1}}</td>
 						<td>
-							<p>Parking Lot Name : {{parkingDetails[i]['parkingName']}}</p>
-							<p>Parking Slot : {{parkingDetails[i]['slot']}}</p>
-							<p>Vehicle Type : {{parkingDetails[i]['vehicleType']}}</p>
-							<p>Entry Time : {{parkingDetails[i]['entryTime']}}</p>
-							<p>Exit Time : {{parkingDetails[i]['exitTime']}}</p>
+							<p>Parking Lot Name : {{parkingDetails[len-1-i]['parkingName']}}</p>
+							<p>Parking Slot : {{parkingDetails[len-1-i]['slot']}}</p>
+							<p>Vehicle Type : {{parkingDetails[len-1-i]['vehicleType']}}</p>
+							<p>Entry Time : {{parkingDetails[len-1-i]['entryTime']}}</p>
+							<p>Exit Time : {{parkingDetails[len-1-i]['exitTime']}}</p>
 						</td>
-						<td>Rs. {{parkingDetails[i]['cost']}}</td>
-						<td><img src={{url_for('file', filename=parkingDetails[i]['image'])}} height="150" width="150"></td>
+						<td>Rs. {{parkingDetails[len-1-i]['cost']}}</td>
+						<td><img src={{url_for('file', filename=parkingDetails[len-1-i]['image'])}} height="150" width="150"></td>
 					</tr>
 				</tbody>
 			{% endfor %}
