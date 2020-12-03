@@ -309,7 +309,9 @@ def adminParkingDetails():
             totalMoneyEarned += details['cost']
         except:
             totalMoneyEarned += 0
-    return render_template('./parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails), totalMoneyEarned=totalMoneyEarned)
+    return render_template('./parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails),
+                           totalMoneyEarned=totalMoneyEarned)
+
 
 # Pricing Routes
 @app.route('/pricing/viewPricing', methods=["GET", "POST"])
@@ -505,7 +507,7 @@ def vehicleEntry():
 def vehicleExit():
     if request.method == "POST":
         id = str(session['admin_id'])
-        mycursor.execute("SELECT shop_name FROM admintable WHERE shop_id="+id)
+        mycursor.execute("SELECT shop_name FROM admintable WHERE shop_id=" + id)
         parkingLotName = mycursor.fetchone()[0]
         print(parkingLotName)
         collectionName = id + "_parkingDetails"
@@ -580,10 +582,9 @@ def vehicleExit():
         }})
 
         currentPassbook = userDetails['passbook']
-        newEntry = {'amount': price, 'desc': 'Money paid to Parking Lot '+parkingLotName, 'balance': newBalance}
+        newEntry = {'amount': price, 'desc': 'Money paid to Parking Lot ' + parkingLotName, 'balance': newBalance}
         currentPassbook.append(newEntry)
         users.find_one_and_update({"_id": rfid}, {'$set': {'passbook': currentPassbook}})
-
 
         return render_template('vehicleExit/vehicleExit.html', message="Your total price is Rs. " + str(
             price) + " and is deducted from your card balance", color="green")
@@ -724,7 +725,9 @@ def seeParkingUser():
     flag = 0
     if 'exitTime' not in parkingDetails[len(parkingDetails) - 1]:
         flag = 1
-    return render_template('./user/parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails), totalMoneySpent=totalMoneySpent)
+    return render_template('./user/parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails),
+                           totalMoneySpent=totalMoneySpent)
+
 
 # User Passbook Route
 @app.route('/user/seePassbook')
@@ -734,6 +737,7 @@ def seePassbook():
     for x in passbook:
         print(x)
     return render_template('./user/passbook/seePassbook.html', passbook=passbook)
+
 
 # User Balance Routes
 @app.route('/user/addBalance', methods=["POST", "GET"])
@@ -746,31 +750,54 @@ def addBalance():
         currentPassbook = userDetails['passbook']
         newEntry = {'amount': balanceToBeAdded, 'desc': 'Money Added to Account', 'balance': newBalance}
         currentPassbook.append(newEntry)
+
+        # Updating Balance
         users.find_one_and_update({'_id': session['user_id']}, {'$set': {'balance': newBalance}})
+
+        # Updating Passbook
         users.find_one_and_update({'_id': session['user_id']}, {'$set': {'passbook': currentPassbook}})
         return redirect(url_for('user_dashboard'))
     return render_template('./user/userBalance/addBalance.html', balance=balance)
+
 
 @app.route('/user/transferBalance', methods=["POST", "GET"])
 def transferBalance():
     userDetails = users.find({"_id": session['user_id']})[0]
     balance = userDetails['balance']
+    userName = userDetails['user_name']
     if request.method == "POST":
         rfid = int(request.form.get("rfid"))
         user = users.find({"_id": rfid})
         money = float(request.form.get("transferBalance"))
         if rfid == session['user_id']:
-            return render_template('./user/userBalance/transferBalance.html', balance=balance, message="You cannot transfer money to your own account", color="red")
+            return render_template('./user/userBalance/transferBalance.html', balance=balance,
+                                   message="You cannot transfer money to your own account", color="red")
         elif len(list(user)) == 0:
-            return render_template('./user/userBalance/transferBalance.html', balance=balance, message="No such user exists, check the rfid again", color="red")
+            return render_template('./user/userBalance/transferBalance.html', balance=balance,
+                                   message="No such user exists, check the rfid again", color="red")
         elif money > balance:
-            return render_template('./user/userBalance/transferBalance.html', balance=balance, message="The amount entered exceeds balance in your account", color="red")
+            return render_template('./user/userBalance/transferBalance.html', balance=balance,
+                                   message="The amount entered exceeds balance in your account", color="red")
         else:
-            newBalance = users.find({"_id": rfid})[0]['balance'] + money
+            otherUser = users.find({"_id": rfid})[0]
+            otherUserName = otherUser['user_name']
+            otherUserBalance = otherUser['balance']
+            otherUserPassbook = otherUser['passbook']
+            newEntry = {'amount': money, 'desc': 'Money Received from '+userName, 'balance': otherUserBalance+money}
+            users.find_one_and_update({"_id": rfid}, {'$set': {'balance': otherUserBalance + money}})
+            otherUserPassbook.append(newEntry)
+            users.find_one_and_update({"_id": rfid}, {'$set': {'passbook': otherUserPassbook}})
+
+
+            passbook = userDetails['passbook']
+            newEntry = {'amount': money, 'desc': 'Money transferred to '+otherUserName, 'balance': balance-money}
+            passbook.append(newEntry)
             users.find_one_and_update({"_id": session['user_id']}, {'$set': {'balance': balance - money}})
-            users.find_one_and_update({"_id": rfid}, {'$set': {'balance': newBalance}})
+            users.find_one_and_update({"_id": session['user_id']}, {'$set': {'passbook': passbook}})
+
             return redirect(url_for('user_dashboard'))
     return render_template('./user/userBalance/transferBalance.html', balance=balance, message="", color="")
+
 
 # Delete User Account Route
 @app.route('/deleteUserAccount')
