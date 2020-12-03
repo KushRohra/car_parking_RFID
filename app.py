@@ -629,7 +629,7 @@ def user_dashboard():
     flag = 0
     slot = 0
     length = len(parkingDetails)
-    if 'exitTime' not in parkingDetails[length - 1]:
+    if length != 0 and 'exitTime' not in parkingDetails[length - 1]:
         flag = 1
         slot = parkingDetails[length - 1]['slot']
     return render_template('./user/user_dashboard.html', flag=flag, slot=slot)
@@ -719,8 +719,10 @@ def seeParkingUser():
 # User Passbook Route
 @app.route('/user/seePassbook')
 def seePassbook():
-    print("poassbook")
-    return render_template('./user/passbook/seePassbook.html')
+    userDetails = users.find({"_id": session['user_id']})[0]
+    passbook = userDetails['passbook']
+    print(passbook)
+    return render_template('./user/passbook/seePassbook.html', passbook=passbook)
 
 # User Balance Routes
 @app.route('/user/addBalance', methods=["POST", "GET"])
@@ -730,7 +732,11 @@ def addBalance():
     if request.method == "POST":
         balanceToBeAdded = int(request.form.get("addBalance"))
         newBalance = balanceToBeAdded + balance
+        currentPassbook = userDetails['passbook']
+        newEntry = {'amount': balanceToBeAdded, 'desc': 'Money Added to Account', 'balance': newBalance}
+        currentPassbook.append(newEntry)
         users.find_one_and_update({'_id': session['user_id']}, {'$set': {'balance': newBalance}})
+        users.find_one_and_update({'_id': session['user_id']}, {'$set': {'passbook': currentPassbook}})
         return redirect(url_for('user_dashboard'))
     return render_template('./user/userBalance/addBalance.html', balance=balance)
 
