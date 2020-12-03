@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from pymongo import MongoClient
 from bubbleSort import *
 from flask_pymongo import PyMongo
-import cv2
 from datetime import datetime
 from takeImage import *
 
@@ -606,9 +605,10 @@ def user_register():
         mongo.save_file(imageName, user_image)
         userImages = [imageName]
         parkingDetails = []
+        passbook = []
         users.insert_one({"_id": current_id, "user_name": user_name, "user_email": user_email, "password": password,
                           "customerType": customerType, "balance": balance, "user_images": userImages,
-                          "parkingDetails": parkingDetails})
+                          "parkingDetails": parkingDetails, "passbook": passbook})
 
         session['user_id'] = current_id
         return redirect(url_for('user_showId'))
@@ -716,6 +716,11 @@ def seeParkingUser():
         flag = 1
     return render_template('./user/parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails), totalMoneySpent=totalMoneySpent)
 
+# User Passbook Route
+@app.route('/user/seePassbook')
+def seePassbook():
+    print("poassbook")
+    return render_template('./user/passbook/seePassbook.html')
 
 # User Balance Routes
 @app.route('/user/addBalance', methods=["POST", "GET"])
