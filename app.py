@@ -486,8 +486,9 @@ def vehicleEntry():
             # Getting last entry in mongoDB releated to the particular user
             refer_id = parking.find({"rfid": rfid}).sort([("_id", -1)]).limit(1)[0]['_id']
 
-            # User Collection Update
-            userParkingDetails = users.find({"_id": rfid})[0]['parkingDetails']
+            # User Parking details Update
+            userDetails = users.find({"_id": rfid})[0]
+            userParkingDetails = userDetails['parkingDetails']
             details = {"parkingName": parkingName, "slot": lotNo, "entryTime": entryTime, "vehicleType": vehicleType,
                        "referId": refer_id, "image": imageName}
             userParkingDetails.append(details)
@@ -504,6 +505,9 @@ def vehicleEntry():
 def vehicleExit():
     if request.method == "POST":
         id = str(session['admin_id'])
+        mycursor.execute("SELECT shop_name FROM admintable WHERE shop_id="+id)
+        parkingLotName = mycursor.fetchone()[0]
+        print(parkingLotName)
         collectionName = id + "_parkingDetails"
         parking = db[collectionName]
 
@@ -574,6 +578,12 @@ def vehicleExit():
             'cost': price,
             'exitTime': exitTime
         }})
+
+        currentPassbook = userDetails['passbook']
+        newEntry = {'amount': price, 'desc': 'Money paid to Parking Lot '+parkingLotName, 'balance': newBalance}
+        currentPassbook.append(newEntry)
+        users.find_one_and_update({"_id": rfid}, {'$set': {'passbook': currentPassbook}})
+
 
         return render_template('vehicleExit/vehicleExit.html', message="Your total price is Rs. " + str(
             price) + " and is deducted from your card balance", color="green")
@@ -721,7 +731,8 @@ def seeParkingUser():
 def seePassbook():
     userDetails = users.find({"_id": session['user_id']})[0]
     passbook = userDetails['passbook']
-    print(passbook)
+    for x in passbook:
+        print(x)
     return render_template('./user/passbook/seePassbook.html', passbook=passbook)
 
 # User Balance Routes
