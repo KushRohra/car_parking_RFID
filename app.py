@@ -137,6 +137,9 @@ def admin_register():
         collectionName = str(id) + "_parkingDetails"
         db.create_collection(collectionName)
 
+        collectionName = str(id) + "_passbook"
+        db.create_collection(collectionName)
+
         session['admin_id'] = id
 
         return redirect(url_for('admin_showId'))
@@ -581,10 +584,27 @@ def vehicleExit():
             'exitTime': exitTime
         }})
 
+        # User passbook update
         currentPassbook = userDetails['passbook']
-        newEntry = {'amount': price, 'desc': 'Money paid to Parking Lot ' + parkingLotName, 'balance': newBalance}
+        newEntry = {
+            'amount': price,
+            'desc': 'Money paid to Parking Lot ' + parkingLotName,
+            'balance': newBalance,
+            'time': exitTime
+        }
         currentPassbook.append(newEntry)
         users.find_one_and_update({"_id": rfid}, {'$set': {'passbook': currentPassbook}})
+
+        # Admin passbook update
+        collectionName = id + "_passbook"
+        passbook = db[collectionName]
+        passbookEntry = {
+            'rfid': rfid,
+            'amount': price,
+            'desc': 'Money paid for parking',
+            'time': exitTime
+        }
+        passbook.insert_one(passbookEntry)
 
         return render_template('vehicleExit/vehicleExit.html', message="Your total price is Rs. " + str(
             price) + " and is deducted from your card balance", color="green")
@@ -723,7 +743,8 @@ def seeParkingUser():
         except:
             totalMoneySpent += 0
     flag = 0
-    if 'exitTime' not in parkingDetails[len(parkingDetails) - 1]:
+    length = len(parkingDetails)
+    if length !=0 and 'exitTime' not in parkingDetails[legth - 1]:
         flag = 1
     return render_template('./user/parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails),
                            totalMoneySpent=totalMoneySpent)
@@ -748,7 +769,12 @@ def addBalance():
         balanceToBeAdded = int(request.form.get("addBalance"))
         newBalance = balanceToBeAdded + balance
         currentPassbook = userDetails['passbook']
-        newEntry = {'amount': balanceToBeAdded, 'desc': 'Money Added to Account', 'balance': newBalance}
+        newEntry = {
+            'amount': balanceToBeAdded,
+            'desc': 'Money Added to Account',
+            'balance': newBalance,
+            'time': datetime.now()
+        }
         currentPassbook.append(newEntry)
 
         # Updating Balance
@@ -783,14 +809,24 @@ def transferBalance():
             otherUserName = otherUser['user_name']
             otherUserBalance = otherUser['balance']
             otherUserPassbook = otherUser['passbook']
-            newEntry = {'amount': money, 'desc': 'Money Received from '+userName, 'balance': otherUserBalance+money}
+            newEntry = {
+                'amount': money,
+                'desc': 'Money Received from ' + userName,
+                'balance': otherUserBalance + money,
+                'time': datetime.now()
+            }
             users.find_one_and_update({"_id": rfid}, {'$set': {'balance': otherUserBalance + money}})
             otherUserPassbook.append(newEntry)
             users.find_one_and_update({"_id": rfid}, {'$set': {'passbook': otherUserPassbook}})
 
 
             passbook = userDetails['passbook']
-            newEntry = {'amount': money, 'desc': 'Money transferred to '+otherUserName, 'balance': balance-money}
+            newEntry = {
+                'amount': money,
+                'desc': 'Money transferred to ' + otherUserName,
+                'balance': balance - money,
+                'time': datetime.now()
+            }
             passbook.append(newEntry)
             users.find_one_and_update({"_id": session['user_id']}, {'$set': {'balance': balance - money}})
             users.find_one_and_update({"_id": session['user_id']}, {'$set': {'passbook': passbook}})
