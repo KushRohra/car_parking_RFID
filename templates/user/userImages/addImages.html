@@ -12,15 +12,16 @@
 		<h3 class="display-2">Add an Image of the person you want to authorize</h3>
 		<br>
 		<div class="row">
-			<form method="POST" class="col s12" enctype="multipart/form-data">
+			<form method="POST" class="col s12" enctype="multipart/form-data" id="form">
+				<div class="row">
+					<div class="col s7">
+						Enter the name with which you want to save the image: <input type="text" id="name" name="imageName" required />
+					</div>
+					<div class="col s5"><p id="mssg"></p></div>
+				</div>
 				<div class="row">
 					<div class="col s12">
 						Upload Your Image: <input type="file" name="user_image" required />
-					</div>
-				</div>
-				<div class="row">
-					<div class="col s5">
-						Enter the name with which you want to save the image: <input type="text" name="imageName" required />
 					</div>
 				</div>
 				<div class="row">
@@ -32,6 +33,37 @@
 		</div>
 	</div>
 
-	<script type=text/javascript src="{{url_for('static', filename='js/user/user_register.js') }}"></script>
+	<script>
+		names = {{userImages|tojson}}
+
+		var mssgArea = document.getElementById("mssg");
+		var submitBtn = document.getElementById("submitBtn");
+
+		document.getElementById("form").addEventListener("keyup", checkName);
+
+		function checkName() {
+			name = document.getElementById("name").value;
+			if(exists(name)) {
+				mssgArea.innerHTML = `An image exists with the same name`;
+				mssgArea.style.color = 'red';
+				submitBtn.disabled = true;
+			}
+			else {
+				mssgArea.innerHTML = `You can use this name`;
+				mssgArea.style.color = 'green';
+				submitBtn.disabled = false;
+			}
+		}
+
+		function exists(name) {
+			for(var i=0;i<names.length;i++) {
+				if(name==names[i])
+					return true;
+			}
+			return false;
+		}
+
+	</script>
+
 </body>
 </html>

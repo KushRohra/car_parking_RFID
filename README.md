@@ -9,6 +9,8 @@ This project was created in order to facilitate Parking Entry with user being as
 5. Add money to card
 6. transferring money to another user
 7. each user has his own passbook where he/she can see her all transactions made
+8. each admin has also a passbook where all the entries are releated to who paid how much and when
+9. Each user saves the image with the name of his choice which cannot be duplicated.
 
 and much more...
 

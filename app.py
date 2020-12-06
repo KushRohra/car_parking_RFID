@@ -719,16 +719,17 @@ def seeImages():
 
 @app.route('/user/addImages', methods=["POST", "GET"])
 def addImages():
+    userDetails = users.find({"_id": session['user_id']})[0]
+    userImages = userDetails['user_images']
     if request.method == "POST":
         user_image = request.files.get("user_image", 'rb')
         imageName = request.form.get("imageName")
-        userDetails = users.find({"_id": session['user_id']})[0]
         mongo.save_file(imageName, user_image)
         userImages = userDetails['user_images']
         userImages.append(imageName)
         users.find_one_and_update({'_id': session['user_id']}, {'$set': {'user_images': userImages}})
         return redirect(url_for('user_dashboard'))
-    return render_template('./user/userImages/addImages.html')
+    return render_template('./user/userImages/addImages.html', userImages=userImages)
 
 
 # See All Parking Details of user
@@ -744,7 +745,7 @@ def seeParkingUser():
             totalMoneySpent += 0
     flag = 0
     length = len(parkingDetails)
-    if length !=0 and 'exitTime' not in parkingDetails[legth - 1]:
+    if length !=0 and 'exitTime' not in parkingDetails[length - 1]:
         flag = 1
     return render_template('./user/parking/parkingDetails.html', parkingDetails=parkingDetails, len=len(parkingDetails),
                            totalMoneySpent=totalMoneySpent)
