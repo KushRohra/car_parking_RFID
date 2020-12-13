@@ -9,7 +9,11 @@ document.getElementById("price_4").addEventListener("keyup", wheeler4);
 function checkPassword() {
     var repeat_password = document.getElementById("repeat_password").value;
     var password = document.getElementById('password').value;
-    if(password!=repeat_password) {
+    if(password=="" && repeat_password=="") {
+          errorArea.innerHTML = ' ';
+          submitBtn.disabled = false;
+    }
+    else if(password!=repeat_password) {
         errorArea.innerHTML = 'Passwords do not match';
         errorArea.style.color = 'red';
         submitBtn.disabled = true;
@@ -21,7 +25,7 @@ function checkPassword() {
     }
 }
 
-function wheeler2() { 
+function wheeler2() {
     document.getElementById("form_2").innerHTML = ``;
     var price2_slots = document.getElementById("price_2").value;
     var price2_form = ``;
@@ -38,7 +42,7 @@ function wheeler2() {
     document.getElementById("form_2").innerHTML = price2_form;
 }
 
-function wheeler4() { 
+function wheeler4() {
     document.getElementById("form_4").innerHTML = ``;
     var price4_slots = document.getElementById("price_4").value;
     var price4_form = ``;

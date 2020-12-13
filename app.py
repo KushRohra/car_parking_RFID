@@ -162,6 +162,12 @@ def admin_dashboard():
     return render_template('./admin/admin_dashboard.html', specialCustomerExist=specialCustomerExist)
 
 
+# Admin Passbook Routes
+@app.route('/passbook/seeAdminPassbook')
+def seeAdminPassbook():
+    return render_template('./passbook/seeAdminPassbook.html')
+
+
 # Special Customers Routes
 @app.route('/specialCustomers/addSpecialCustomers', methods=["POST", "GET"])
 def addSpecialCustomers():
@@ -406,6 +412,8 @@ def deleteAdminAccount():
     mycursor.execute("DROP TABLE " + id + "__special")
     mycursor.execute("DELETE FROM admintable WHERE shop_id=" + id)
     collectionName = id + "_parkingDetails"
+    db[collectionName].drop()
+    collectionName = id + "_passbook"
     db[collectionName].drop()
     mydb.commit()
     return redirect('/')
@@ -752,13 +760,13 @@ def seeParkingUser():
 
 
 # User Passbook Route
-@app.route('/user/seePassbook')
-def seePassbook():
+@app.route('/user/seeUserPassbook')
+def seeUserPassbook():
     userDetails = users.find({"_id": session['user_id']})[0]
     passbook = userDetails['passbook']
     for x in passbook:
         print(x)
-    return render_template('./user/passbook/seePassbook.html', passbook=passbook)
+    return render_template('./user/passbook/seeUserPassbook.html', passbook=passbook)
 
 
 # User Balance Routes

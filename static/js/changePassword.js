@@ -7,7 +7,11 @@ document.getElementById("repeat_password").addEventListener("keyup", checkPasswo
 function checkPassword() {
     var repeat_password = document.getElementById("repeat_password").value;
     var password = document.getElementById('password').value;
-    if(password!=repeat_password) {
+    if(password=="" && repeat_password=="") {
+          errorArea.innerHTML = ' ';
+          submitBtn.disabled = false;
+    }
+    else if(password!=repeat_password) {
         errorArea.innerHTML = 'Passwords do not match';
         errorArea.style.color = 'red';
         submitBtn.disabled = true;
