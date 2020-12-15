@@ -8,7 +8,29 @@
 	<div class="container">
 		<br>
 		<a href="../user_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<br>
+		<table class="centered responsive-tables highlight">
+			<thead>
+				<tr>
+					<th>Serial No</th>
+					<th>Date-Time</th>
+					<th>Description</th>
+					<th>Amount</th>
+					<th>Balance</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for i in range(length) %}
+					<tr>
+						<td>{{i + 1}}</td>
+						<td>{{passbook[i]['time']}}</td>
+						<td>{{passbook[i]['desc']}}</td>
+						<td>{{passbook[i]['amount']}}</td>
+						<td>{{passbook[i]['balance']}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
-
 </body>
 </html>

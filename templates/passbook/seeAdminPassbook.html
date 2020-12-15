@@ -7,8 +7,28 @@
 <body>
 	<div class="container">
 		<br>
-		<a href="../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<a href="../../../admin_dashboard" class="waves-light waves-effect btn">Go to Dashboard</a>
+		<br>
+		<table class="centered responsive-tables highlight">
+			<thead>
+				<tr>
+					<th>Serial No</th>
+					<th>Date-Time</th>
+					<th>Description</th>
+					<th>Amount</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for i in range(length) %}
+					<tr>
+						<td>{{i + 1}}</td>
+						<td>{{details[i]['time']}}</td>
+						<td>{{details[i]['desc']}}</td>
+						<td>{{details[i]['amount']}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
-
 </body>
 </html>

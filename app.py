@@ -161,11 +161,14 @@ def admin_dashboard():
     specialCustomerExist = int(mycursor.fetchone()[0])
     return render_template('./admin/admin_dashboard.html', specialCustomerExist=specialCustomerExist)
 
-
 # Admin Passbook Routes
 @app.route('/passbook/seeAdminPassbook')
 def seeAdminPassbook():
-    return render_template('./passbook/seeAdminPassbook.html')
+    id = str(session['admin_id'])
+    collectionName = id + "_passbook"
+    passbook = db[collectionName]
+    passbookDetails = list(passbook.find({}))
+    return render_template('./passbook/seeAdminPassbook.html', details=passbookDetails, length=len(passbookDetails))
 
 
 # Special Customers Routes
@@ -604,12 +607,13 @@ def vehicleExit():
         users.find_one_and_update({"_id": rfid}, {'$set': {'passbook': currentPassbook}})
 
         # Admin passbook update
+        userName = userDetails['user_name']
         collectionName = id + "_passbook"
         passbook = db[collectionName]
         passbookEntry = {
             'rfid': rfid,
             'amount': price,
-            'desc': 'Money paid for parking',
+            'desc': 'Money paid for parking by ' + userName,
             'time': exitTime
         }
         passbook.insert_one(passbookEntry)
@@ -764,9 +768,7 @@ def seeParkingUser():
 def seeUserPassbook():
     userDetails = users.find({"_id": session['user_id']})[0]
     passbook = userDetails['passbook']
-    for x in passbook:
-        print(x)
-    return render_template('./user/passbook/seeUserPassbook.html', passbook=passbook)
+    return render_template('./user/passbook/seeUserPassbook.html', passbook=passbook, length=len(passbook))
 
 
 # User Balance Routes
